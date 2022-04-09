@@ -1,4 +1,4 @@
-# OOS-Vorbereitung
+# my-OOS-Project
 
 
 
@@ -15,14 +15,14 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 
 ```
 cd existing_repo
-git remote add origin https://git.fh-muenster.de/sa247031/oos-vorbereitung.git
+git remote add origin https://git.fh-muenster.de/sa247031/my-oos-project.git
 git branch -M main
 git push -uf origin main
 ```
 
 ## Integrate with your tools
 
-- [ ] [Set up project integrations](https://git.fh-muenster.de/sa247031/oos-vorbereitung/-/settings/integrations)
+- [ ] [Set up project integrations](https://git.fh-muenster.de/sa247031/my-oos-project/-/settings/integrations)
 
 ## Collaborate with your team
 
