@@ -24,9 +24,8 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 	protected double uScal, vScal; 	
 	protected double initXMax, initXMin; 
 	
-	protected double xMin, xMax,yMin, yMax; 
+	protected double xMin, xMax, yMin, yMax;
 	private static int zoomFaktor = 1;
-	
 
 	/**
 	 * Creates a new instance.
@@ -36,52 +35,51 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 	 */
 	public SWTCanvasPlotter(Composite parent, int style) {
 		super(parent, style);
-		//Set the draw Intervall
-		double myxMin = -10; 
-		double myxMax = 10; 
-		double myyMin = -3; 
-		double myyMax = 3; 
-		
-		setInitIntervall(myxMin, myxMax); 
+		// Set the draw Intervall
+		double myxMin = -10;
+		double myxMax = 10;
+		double myyMin = -10;
+		double myyMax = 10;
+
+		setInitIntervall(myxMin, myxMax);
 		setDrawIntervall(myxMin, myxMax);
-		setyIntervall(myyMin,myyMax); 
+		setyIntervall(myyMin, myyMax);
 		addListeners();
 	}
-	
-	
+
 	void addListeners() {
-		//MouseWheel Listener 
+		// MouseWheel Listener
 		addMouseWheelListener(new MouseWheelListener() {
 			@Override
 			public void mouseScrolled(MouseEvent e) {
-				double xZoomSchritt = 0.5; 
-				double yZoomSchritt= 0.2; 
-				double[] aktualXIntervall = getIntervall(); 
-				double aktualXSize= aktualXIntervall[1]-aktualXIntervall[0]; 
-				
-				double[] initIntervall = getInitIntervall(); 
-				double initSize = initIntervall[1]-initIntervall[0]; 
-				
-				double[] aktualYIntervall = getyIntervall(); 
-				double aktualYSize = aktualYIntervall[1]-aktualYIntervall[0]; 
-				
+				double xZoomSchritt = 0.5;
+				double yZoomSchritt = 0.2;
+				double[] aktualXIntervall = getIntervall();
+				double aktualXSize = aktualXIntervall[1] - aktualXIntervall[0];
+
+				double[] initIntervall = getInitIntervall();
+				double initSize = initIntervall[1] - initIntervall[0];
+
+				double[] aktualYIntervall = getyIntervall();
+				double aktualYSize = aktualYIntervall[1] - aktualYIntervall[0];
+
 				if (e.count > 0) {
-					if(aktualXSize> 2*xZoomSchritt && aktualYSize > 2*yZoomSchritt ) { // Zoom in = Verkleinerung des Intervalls
-						setDrawIntervall(aktualXIntervall[0]+xZoomSchritt, aktualXIntervall[1]-xZoomSchritt);
-						setyIntervall(aktualYIntervall[0]+yZoomSchritt, aktualYIntervall[1]-yZoomSchritt);
-						
+					if (aktualXSize > 2 * xZoomSchritt && aktualYSize > 2 * yZoomSchritt) { // Zoom in = Verkleinerung des Intervalls
+						setDrawIntervall(aktualXIntervall[0] + xZoomSchritt, aktualXIntervall[1] - xZoomSchritt);
+						setyIntervall(aktualYIntervall[0] + yZoomSchritt, aktualYIntervall[1] - yZoomSchritt);
+
 					}
-				} else {// Zoom out = Vergrößerung des Intervalls 
-					if (aktualXSize < initSize) { //Out zoom begrenzen mit dem gewünschten Initialen Intervall
-						setDrawIntervall(aktualXIntervall[0]-xZoomSchritt, aktualXIntervall[1] + xZoomSchritt);
-						setyIntervall(aktualYIntervall[0]-yZoomSchritt, aktualYIntervall[1] + yZoomSchritt); 
+				} else {// Zoom out = Vergrößerung des Intervalls
+					setDrawIntervall(aktualXIntervall[0] - xZoomSchritt, aktualXIntervall[1] + xZoomSchritt);
+					setyIntervall(aktualYIntervall[0] - yZoomSchritt, aktualYIntervall[1] + yZoomSchritt);
+					if (aktualXSize < initSize) { // Out zoom begrenzen mit dem gewünschten Initialen Intervall
 					}
 
 				}
 				redraw();
 			}
 		});
-		
+
 		// Paint Listener
 		addPaintListener(new PaintListener() {
 			public void paintControl(PaintEvent e) {
@@ -89,125 +87,126 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 				Canvas canvas = (Canvas) e.widget;
 				int breite = canvas.getSize().x;
 				int hoehe = canvas.getSize().y;
-				
-				// Set the drawable area
+
+				// Set the drawable areascalV
 				setCanvasSize(breite, hoehe);
-				
+
 				// Scaling Factors
 				double[] xIntervall = getIntervall();
-				double[] yIntervall = getyIntervall(); 
-				double scalU  = breite/((xIntervall[1]-xIntervall[0])); 
-				double scalV = hoehe/(yIntervall[1]-yIntervall[0]); 
-				setScaling(scalU, scalV); 
-				
+				double[] yIntervall = getyIntervall();
+				double scalU = breite / ((xIntervall[1] - xIntervall[0]));
+				double scalV = hoehe / (yIntervall[1] - yIntervall[0]);
+				setScaling(scalU, scalV);
+
 				// set the Origin
-				setOrigin(breite/4, (3*hoehe)/4);
+				setOrigin(breite / 2, hoehe / 2);
 
 				// draw the Axis
 				drawAxis(e);
 				drawUnits(e);
 
-				int[] sinPloygon = new int[2 * (getMaxU()+1)];
-				Function<Double,Double> myFunc = (x) -> Math.sin(x); 
-				
+				int[] sinPloygon = new int[2*(getMaxU()+1)];
+				Function<Double, Double> myFunc =(x)-> Math.exp(x);
+
 				// draw the functions
 				int j = 0;
-				for (int i=-getXOrigin(); i<=getMaxU()-getXOrigin(); i++) {		
-					double zwischenI = i*((xIntervall[1]-xIntervall[0])/getMaxU()) ; 
-					sinPloygon[2*j] = translateU(scalU*zwischenI);
-					sinPloygon[2*j+1] = translateV(scalV*myFunc.apply(zwischenI));		
-					j=j+1;
+				for (int i = -getXOrigin(); i <= getMaxU() - getXOrigin(); i++) {
+					double zwischenI = i*((xIntervall[1] - xIntervall[0]) / getMaxU());
+					int yPixel = (int) ( scalV * myFunc.apply(zwischenI));
+					if( yPixel> getMaxV() ) {
+						break; 
+					}
+					sinPloygon[2 * j] = translateU(zwischenI*scalU);
+					sinPloygon[2 * j + 1] = translateV(scalV * myFunc.apply(zwischenI));
+					j = j + 1;						
+					
 				}
 
 				e.gc.setLineWidth(1);
 				e.gc.drawPolyline(sinPloygon);
-				
 			}
 		});
-		
-		
-		
-	}
-	
-	// von screen to World Coordinates 
-	double[] convertUV(int u, int v) { 
-		double[] xy = trafo(u,v); 
-		return xy; 
-	}
-	
-	//von world to screen Coordinates 
-	int[] convertXY(double x, double y) {
-		int[] uv= trafo(x,y); 
-		return uv;  
-	}
-	
-	//Set the X-Draw-Intervall 
-	@Override
-	public void setDrawIntervall(double xMin, double xMax){
-		this.xMin = xMin; 
-		this.xMax = xMax; 
-	}
-	
-	double[] getIntervall() {
-		double[] result = new double[2]; 
-		result[0] = this.xMin; 
-		result[1] = this.xMax; 
-		return result; 
-	}
-	
-	// Getter/Setter for X-init-Intervall 
-	void setInitIntervall(double initXMin, double initXMax) {
-		this.initXMin= initXMin; 
-		this.initXMax=  initXMax; 
-	}
-	
-	double[] getInitIntervall() {
-		double[] initIntervall = new double[2]; 
-		initIntervall[0]=this.initXMin; 
-		initIntervall[1]=this.initXMax; 
-		return initIntervall;
-	}
-	
-	
-	//Getter/Setter for y-draw-Intervall
-	@Override
-	public void setyIntervall(double yMin, double yMax) {
-		this.yMin= yMin; 
-		this.yMax=  yMax; 
-	}
-	
-	double[] getyIntervall() {
-		double[] yIntervall = new double[2]; 
-		yIntervall[0]=this.yMin; 
-		yIntervall[1]=this.yMax; 
-		return yIntervall;
-	}
-	
-	// (u,v) <-> (x,y) Operationen 	
-	int translateU(double u) {
-		return (int) (getXOrigin() + u); 
-	}
-	
-	int translateU(int u) {
-		return getXOrigin() + u; 
+
 	}
 
-	
-	// Translate functions 
+	// von screen to World Coordinates
+	double[] convertUV(int u, int v) {
+		double[] xy = trafo(u, v);
+		return xy;
+	}
+
+	// von world to screen Coordinates
+	int[] convertXY(double x, double y) {
+		int[] uv = trafo(x, y);
+		return uv;
+	}
+
+	// Set the X-Draw-Intervall
+	@Override
+	public void setDrawIntervall(double xMin, double xMax) {
+		this.xMin = xMin;
+		this.xMax = xMax;
+	}
+
+	double[] getIntervall() {
+		double[] result = new double[2];
+		result[0] = this.xMin;
+		result[1] = this.xMax;
+		return result;
+	}
+
+	// Getter/Setter for X-init-Intervall
+	void setInitIntervall(double initXMin, double initXMax) {
+		this.initXMin = initXMin;
+		this.initXMax = initXMax;
+	}
+
+	double[] getInitIntervall() {
+		double[] initIntervall = new double[2];
+		initIntervall[0] = this.initXMin;
+		initIntervall[1] = this.initXMax;
+		return initIntervall;
+	}
+
+	// Getter/Setter for y-draw-Intervall
+	@Override
+	public void setyIntervall(double yMin, double yMax) {
+		this.yMin = yMin;
+		this.yMax = yMax;
+	}
+
+	double[] getyIntervall() {
+		double[] yIntervall = new double[2];
+		yIntervall[0] = this.yMin;
+		yIntervall[1] = this.yMax;
+		return yIntervall;
+	}
+
+	// (u,v) <-> (x,y) Operationen
+	int translateU(double u) {
+		return (int) (getXOrigin() + u);
+	}
+
+	int translateU(int u) {
+		return getXOrigin() + u;
+	}
+
+	// Translate functions
 	int translateV(double v) {
 		return (int) (getYOrigin() - v);
 	}
-	
-	int translateV(int  v) {
+
+	int translateV(int v) {
 		return getYOrigin() - v;
 	}
-	
+
 	// Getter/Setter for origin
 	@Override
 	public void setOrigin(int xOrigin, int yOrigin) {
 		this.xOrigin = xOrigin;
 		this.yOrigin = yOrigin;
 	}
+
 	protected int getXOrigin() {
 		return xOrigin;
 	}
@@ -217,18 +216,18 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 	}
 
 	// getter/setter for scaling factors
-	protected void setScaling(double uScalFactor, double vScalFactor) {
+	protected void setScaling(double uScalFactor, double vScalFactor) {					
 		this.uScal = uScalFactor;
-		this.vScal= vScalFactor;
+		this.vScal = vScalFactor;
 	}
-	
+
 	protected double[] getScaling() {
-		double[] ret = new double[2]; 
-		ret[0]= this.uScal ;
+		double[] ret = new double[2];
+		ret[0] = this.uScal;
 		ret[1] = this.vScal;
-		return ret; 
+		return ret;
 	}
-	
+
 	// Getter/Setter for Canvas size
 	@Override
 	public void setCanvasSize(int breite, int hoehe) {
@@ -271,7 +270,7 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 		drawArrow(e.gc, getXOrigin(), hoehe, getXOrigin(), 0, 8, Math.toRadians(40));
 	}
 
-	//https://stackoverflow.com/questions/34159006/how-to-draw-a-line-with-arrow-in-swt-on-canvas
+	// https://stackoverflow.com/questions/34159006/how-to-draw-a-line-with-arrow-in-swt-on-canvas
 	public static void drawArrow(GC gc, int x1, int y1, int x2, int y2, double arrowLength, double arrowAngle) {
 		double theta = Math.atan2(y2 - y1, x2 - x1);
 		double offset = (arrowLength - 2) * Math.cos(arrowAngle);
@@ -333,8 +332,7 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 	public void dispose() {
 		this.myColor.dispose();
 	}
-	
-	
+
 	@Override
 	public double[] trafo(int u, int v) {
 		double[] xy = new double[2];

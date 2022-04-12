@@ -23,6 +23,7 @@ public class PlotterTest {
 	int vMin=0, vMax;
 	double xMin, yMin;
 	double xMax, yMax;
+	double error ;
 
 	@BeforeEach
 	public void setUp() {
@@ -45,6 +46,8 @@ public class PlotterTest {
 		xMax = canvas.xMax;
 		yMin = canvas.yMin; 
 		yMax = canvas.yMax; 
+		
+		error = uScal/uMax; 
 	}
 
 	@Test
@@ -52,7 +55,7 @@ public class PlotterTest {
 		assertNotNull(canvas);
 	}
 
-	
+	//Origin
 	@Test
 	void intOriginTrafo() {
 		int[] uv = canvas.trafo(0.0, 0.0);
@@ -60,14 +63,16 @@ public class PlotterTest {
 		assertEquals(yOrigin, uv[1]);
 	}
 	
-	
+	//Punkt 2
 	@Test
 	void doubleTrafo() {
 		double[] uv = canvas.trafo(uMin, vMax - yOrigin);
 		assertEquals(xMin, uv[0]);
 		assertEquals(0, uv[1]);
 	}
-
+	
+	
+	//Punkt 3
 	@Test
 	void doubleTrafo2() {
 		double[] uv = canvas.trafo(xOrigin, 0);
@@ -82,6 +87,8 @@ public class PlotterTest {
 		assertEquals(0, uv[1]);
 	}
 
+	
+	//doppelte Trafo
 	@Test
 	void convertUVTest() {
 		Random rdm = new Random(); 
@@ -91,5 +98,17 @@ public class PlotterTest {
 		int[] actualResult = canvas.trafo(myResult[0], myResult[1]);
 		assertEquals(myU, actualResult[0]);
 		assertEquals(myV, actualResult[1]);
+	}
+	
+	
+	@Test
+	void convertXYTest() {
+		Random rdm = new Random(); 
+		double myX = rdm.nextDouble(xMax);
+		double myY = rdm.nextDouble(yMax);
+		int[] myResult = canvas.trafo(myX, myY);
+		double[] actualResult = canvas.trafo(myResult[0], myResult[1]);
+		assertEquals(myX, actualResult[0],error);
+		assertEquals(myY, actualResult[1],error);
 	}
 }
