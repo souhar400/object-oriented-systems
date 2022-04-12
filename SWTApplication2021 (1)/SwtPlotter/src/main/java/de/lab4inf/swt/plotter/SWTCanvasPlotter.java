@@ -1,6 +1,9 @@
 package de.lab4inf.swt.plotter;
 
 import org.eclipse.swt.widgets.Composite;
+
+import java.util.function.Function;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseWheelListener;
@@ -93,25 +96,26 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 				// Scaling Factors
 				double[] xIntervall = getIntervall();
 				double[] yIntervall = getyIntervall(); 
-				double scalU  = breite/((xIntervall[1]-xIntervall[0])*zoomFaktor); 
-				double scalV = hoehe/(yIntervall[1]-yIntervall[0])*zoomFaktor; 
+				double scalU  = breite/((xIntervall[1]-xIntervall[0])); 
+				double scalV = hoehe/(yIntervall[1]-yIntervall[0]); 
 				setScaling(scalU, scalV); 
 				
 				// set the Origin
-				setOrigin(breite/2, hoehe/2);
+				setOrigin(breite/4, (3*hoehe)/4);
 
 				// draw the Axis
 				drawAxis(e);
 				drawUnits(e);
 
 				int[] sinPloygon = new int[2 * (getMaxU()+1)];
-
+				Function<Double,Double> myFunc = (x) -> Math.sin(x); 
+				
 				// draw the functions
 				int j = 0;
 				for (int i=-getXOrigin(); i<=getMaxU()-getXOrigin(); i++) {		
 					double zwischenI = i*((xIntervall[1]-xIntervall[0])/getMaxU()) ; 
 					sinPloygon[2*j] = translateU(scalU*zwischenI);
-					sinPloygon[2*j+1] = translateV(scalV*(Math.sin(zwischenI)));		
+					sinPloygon[2*j+1] = translateV(scalV*myFunc.apply(zwischenI));		
 					j=j+1;
 				}
 
@@ -267,6 +271,7 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 		drawArrow(e.gc, getXOrigin(), hoehe, getXOrigin(), 0, 8, Math.toRadians(40));
 	}
 
+	//https://stackoverflow.com/questions/34159006/how-to-draw-a-line-with-arrow-in-swt-on-canvas
 	public static void drawArrow(GC gc, int x1, int y1, int x2, int y2, double arrowLength, double arrowAngle) {
 		double theta = Math.atan2(y2 - y1, x2 - x1);
 		double offset = (arrowLength - 2) * Math.cos(arrowAngle);
