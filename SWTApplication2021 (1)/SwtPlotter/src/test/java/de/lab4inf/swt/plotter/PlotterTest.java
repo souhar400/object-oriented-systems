@@ -104,8 +104,8 @@ public class PlotterTest {
 	@Test
 	void convertXYTest() {
 		Random rdm = new Random(); 
-		double myX = rdm.nextDouble(xMax);
-		double myY = rdm.nextDouble(yMax);
+		double myX = rdm.nextDouble()*xMax;
+		double myY = rdm.nextDouble()*yMax;
 		int[] myResult = canvas.trafo(myX, myY);
 		double[] actualResult = canvas.trafo(myResult[0], myResult[1]);
 		assertEquals(myX, actualResult[0],error);

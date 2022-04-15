@@ -25,7 +25,7 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 	protected double initXMax, initXMin; 
 	
 	protected double xMin, xMax, yMin, yMax;
-	private static int zoomFaktor = 1;
+	//private static int zoomFaktor = 1;
 
 	/**
 	 * Creates a new instance.
@@ -106,18 +106,18 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 				drawUnits(e);
 
 				int[] sinPloygon = new int[2*(getMaxU()+1)];
-				Function<Double, Double> myFunc =(x)-> Math.exp(x);
+				Function<Double, Double> myFunc =(x)-> x*x*x*x;
 
 				// draw the functions
 				int j = 0;
 				for (int i = -getXOrigin(); i <= getMaxU() - getXOrigin(); i++) {
 					double zwischenI = i*((xIntervall[1] - xIntervall[0]) / getMaxU());
 					int yPixel = (int) ( scalV * myFunc.apply(zwischenI));
-					if( yPixel> getMaxV() ) {
-						break; 
+					System.out.println(yPixel);
+					if( yPixel< getMaxV() ) {
+						sinPloygon[2 * j] = translateU(zwischenI*scalU);
+						sinPloygon[2 * j + 1] = translateV(scalV * myFunc.apply(zwischenI)); 
 					}
-					sinPloygon[2 * j] = translateU(zwischenI*scalU);
-					sinPloygon[2 * j + 1] = translateV(scalV * myFunc.apply(zwischenI));
 					j = j + 1;						
 					
 				}
