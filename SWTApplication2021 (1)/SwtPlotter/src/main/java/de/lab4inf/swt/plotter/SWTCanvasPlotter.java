@@ -2,8 +2,9 @@ package de.lab4inf.swt.plotter;
 
 import org.eclipse.swt.widgets.Composite;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.function.Function;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseWheelListener;
@@ -14,18 +15,19 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Path;
 import org.eclipse.swt.widgets.Canvas;
 
-
-public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements AffineTrafo, ResizeCanvas{
+public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements AffineTrafo, ResizeCanvas {
 
 	private Color myColor;
-	private int xOrigin, yOrigin; 
-	private int breite, hoehe; 
+	private int xOrigin, yOrigin;
+	private int breite, hoehe;
+	double yZoomSchritt, xZoomSchritt;
 
-	protected double uScal, vScal; 	
-	protected double initXMax, initXMin; 
-	
+	private boolean zoomOn = false;
+	protected double uScal, vScal;
+	protected double initXMax, initXMin;
+
 	protected double xMin, xMax, yMin, yMax;
-	//private static int zoomFaktor = 1;
+	protected HashMap<String, Function<Double, Double>>  functions = null;
 
 	/**
 	 * Creates a new instance.
@@ -35,11 +37,12 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 	 */
 	public SWTCanvasPlotter(Composite parent, int style) {
 		super(parent, style);
+
 		// Set the draw Intervall
-		double myxMin = -10;
-		double myxMax = 10;
-		double myyMin = -10;
-		double myyMax = 10;
+		double myxMin = -5;
+		double myxMax = 5;
+		double myyMin = -3;
+		double myyMax = 3;
 
 		setInitIntervall(myxMin, myxMax);
 		setDrawIntervall(myxMin, myxMax);
@@ -54,6 +57,7 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 			public void mouseScrolled(MouseEvent e) {
 				double xZoomSchritt = 0.5;
 				double yZoomSchritt = 0.2;
+				setZoom(xZoomSchritt, yZoomSchritt);
 				double[] aktualXIntervall = getIntervall();
 				double aktualXSize = aktualXIntervall[1] - aktualXIntervall[0];
 
@@ -64,12 +68,15 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 				double aktualYSize = aktualYIntervall[1] - aktualYIntervall[0];
 
 				if (e.count > 0) {
-					if (aktualXSize > 2 * xZoomSchritt && aktualYSize > 2 * yZoomSchritt) { // Zoom in = Verkleinerung des Intervalls
+					zoomOn = true;
+					if (aktualXSize > 2 * xZoomSchritt && aktualYSize > 2 * yZoomSchritt) { // rein Zoom = Verkleinerung
+																							// des Intervalls
 						setDrawIntervall(aktualXIntervall[0] + xZoomSchritt, aktualXIntervall[1] - xZoomSchritt);
 						setyIntervall(aktualYIntervall[0] + yZoomSchritt, aktualYIntervall[1] - yZoomSchritt);
 
 					}
 				} else {// Zoom out = Vergrößerung des Intervalls
+					zoomOn = false;
 					setDrawIntervall(aktualXIntervall[0] - xZoomSchritt, aktualXIntervall[1] + xZoomSchritt);
 					setyIntervall(aktualYIntervall[0] - yZoomSchritt, aktualYIntervall[1] + yZoomSchritt);
 					if (aktualXSize < initSize) { // Out zoom begrenzen mit dem gewünschten Initialen Intervall
@@ -83,12 +90,11 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 		// Paint Listener
 		addPaintListener(new PaintListener() {
 			public void paintControl(PaintEvent e) {
-
 				Canvas canvas = (Canvas) e.widget;
 				int breite = canvas.getSize().x;
 				int hoehe = canvas.getSize().y;
 
-				// Set the drawable areascalV
+				// Set the drawable area
 				setCanvasSize(breite, hoehe);
 
 				// Scaling Factors
@@ -104,29 +110,55 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 				// draw the Axis
 				drawAxis(e);
 				drawUnits(e);
-
-				int[] sinPloygon = new int[2*(getMaxU()+1)];
-				Function<Double, Double> myFunc =(x)-> x*x*x*x;
-
-				// draw the functions
-				int j = 0;
-				for (int i = -getXOrigin(); i <= getMaxU() - getXOrigin(); i++) {
-					double zwischenI = i*((xIntervall[1] - xIntervall[0]) / getMaxU());
-					int yPixel = (int) ( scalV * myFunc.apply(zwischenI));
-					System.out.println(yPixel);
-					if( yPixel< getMaxV() ) {
-						sinPloygon[2 * j] = translateU(zwischenI*scalU);
-						sinPloygon[2 * j + 1] = translateV(scalV * myFunc.apply(zwischenI)); 
-					}
-					j = j + 1;						
-					
-				}
-
-				e.gc.setLineWidth(1);
-				e.gc.drawPolyline(sinPloygon);
+				if (functions != null)
+					drawFunction(e);
 			}
 		});
 
+	}
+
+	void setZoom(double xZoom, double yZoom) {
+		this.xZoomSchritt = xZoom;
+		this.yZoomSchritt = yZoom;
+	}
+
+	void drawFunction(PaintEvent e) {
+		double[] xIntervall = getIntervall();
+		double[] yIntervall = getyIntervall();
+		double xSize = xIntervall[1] - xIntervall[0];
+		double ySize = yIntervall[1] - yIntervall[0];
+
+		double scalU = breite / ((xIntervall[1] - xIntervall[0]));
+		double scalV = hoehe / (yIntervall[1] - yIntervall[0]);
+
+		boolean klein = false;
+
+		if (xSize <= 6 * xZoomSchritt || ySize <= 6 * yZoomSchritt)
+			klein = true;
+		for (Function<Double, Double> fct : functions.values()) {
+			int[] polygon = new int[2 * (getMaxU() + 1)];
+
+			int j = 0;
+			for (int i = -getXOrigin(); i <= getMaxU() - getXOrigin(); i++) {
+				double zwischenI = i * ((xIntervall[1] - xIntervall[0]) / getMaxU());
+
+				int yPixel = (int) (scalV * fct.apply(zwischenI));
+
+				if ((yPixel < -getMaxV() || yPixel > getMaxV())) {
+					if (!zoomOn) {
+						if (!klein)
+							continue;
+					} else if (!klein)
+						continue;
+
+				}
+				polygon[2 * j] = translateU(zwischenI * scalU);
+				polygon[2 * j + 1] = translateV(scalV * fct.apply(zwischenI));
+				j = j + 1;
+			}
+			e.gc.setLineWidth(1);
+			e.gc.drawPolyline(polygon);
+		}
 	}
 
 	// von screen to World Coordinates
@@ -216,7 +248,7 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 	}
 
 	// getter/setter for scaling factors
-	protected void setScaling(double uScalFactor, double vScalFactor) {					
+	protected void setScaling(double uScalFactor, double vScalFactor) {
 		this.uScal = uScalFactor;
 		this.vScal = vScalFactor;
 	}
@@ -270,7 +302,6 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 		drawArrow(e.gc, getXOrigin(), hoehe, getXOrigin(), 0, 8, Math.toRadians(40));
 	}
 
-	// https://stackoverflow.com/questions/34159006/how-to-draw-a-line-with-arrow-in-swt-on-canvas
 	public static void drawArrow(GC gc, int x1, int y1, int x2, int y2, double arrowLength, double arrowAngle) {
 		double theta = Math.atan2(y2 - y1, x2 - x1);
 		double offset = (arrowLength - 2) * Math.cos(arrowAngle);
@@ -324,6 +355,14 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 	 */
 	public void setForeground(Color c) {
 		return;
+	}
+
+	public void setFcts(HashMap<String, Function<Double, Double>>  fctSet) {
+		this.functions = fctSet;
+	}
+
+	public HashMap<String, Function<Double, Double>>  getFcts() {
+		return this.functions;
 	}
 
 	/**

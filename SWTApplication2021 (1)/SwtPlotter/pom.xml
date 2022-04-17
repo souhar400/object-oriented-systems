@@ -1,60 +1,59 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <groupId>de.lab4inf</groupId>
-  <artifactId>swtplotter</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>jar</packaging>
+	<groupId>de.lab4inf</groupId>
+	<artifactId>swtplotter</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 
-  <name>SwtPlotter</name>
-  <url>http://maven.apache.org</url>
+	<name>SwtPlotter</name>
+	<url>http://maven.apache.org</url>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <swt.version>4.3</swt.version>
-  </properties>
-  <!--  include a repo with SWT support -->
-  <repositories>
-    <repository>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <id>central</id>
-      <name>Central Repository</name>
-      <url>https://repo.maven.apache.org/maven2</url>
-    </repository>
-        
-    <repository>
-        <id>snapshot-repository.java.net</id>
-        <name>Java.net Snapshot Repository for Maven</name>
-        <url>https://maven.java.net/content/repositories/snapshots/</url>
-        <layout>default</layout>
-    </repository>
-      <repository>
-          <id>swt-repo</id>
-          <url>https://swt-repo.googlecode.com/svn/repo/</url>
-      </repository>
-      
-     <repository>
-        <id>local-maven-repository</id>
-        <name>local build</name>
-        <url>file://srv/maven-repository/</url>
-    </repository>
-      
-      
-  </repositories>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<swt.version>4.3</swt.version>
+	</properties>
+	<!--  include a repo with SWT support -->
+	<repositories>
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>central</id>
+			<name>Central Repository</name>
+			<url>https://repo.maven.apache.org/maven2</url>
+		</repository>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <version>5.5.2</version>
-      <scope>test</scope>
-    </dependency>
-    <!--  
+		<repository>
+			<id>snapshot-repository.java.net</id>
+			<name>Java.net Snapshot Repository for Maven</name>
+			<url>https://maven.java.net/content/repositories/snapshots/</url>
+			<layout>default</layout>
+		</repository>
+		<repository>
+			<id>swt-repo</id>
+			<url>https://swt-repo.googlecode.com/svn/repo/</url>
+		</repository>
+
+		<repository>
+			<id>local-maven-repository</id>
+			<name>local build</name>
+			<url>file://srv/maven-repository/</url>
+		</repository>
+
+
+	</repositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.5.2</version>
+			<scope>test</scope>
+		</dependency>
+		<!--  
     <dependency>
         <groupId>org.antlr</groupId>
         <artifactId>antlr4-runtime</artifactId>
@@ -66,16 +65,50 @@
             <version>0.0.1-SNAPSHOT</version>
     </dependency>
     -->
-    
-    <!-- TODO: Choose the SWT for your plattform -->
-      <dependency>
-            <groupId>org.eclipse.swt</groupId>
-            <artifactId>org.eclipse.swt.gtk.linux.x86_64</artifactId>
-            <version>${swt.version}</version>
-            <scope>compile</scope>
-      </dependency>
 
-        <!--  
+		<!-- TODO: Choose the SWT for your plattform -->
+		<dependency>
+			<groupId>org.eclipse.swt</groupId>
+			<artifactId>org.eclipse.swt.gtk.linux.x86_64</artifactId>
+			<version>${swt.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openjdk.nashorn</groupId>
+			<artifactId>nashorn-core</artifactId>
+			<version>15.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.ow2.asm</groupId>
+			<artifactId>asm-commons</artifactId>
+			<version>7.3.1</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.ow2.asm</groupId>
+		    <artifactId>asm-util</artifactId>
+		    <version>7.3.1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.ow2.asm</groupId>
+			<artifactId>asm-tree</artifactId>
+			<version>7.3.1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.ow2.asm</groupId>
+			<artifactId>asm</artifactId>
+			<version>7.3.1</version>
+		</dependency>
+		
+
+		
+		
+
+		<!--  
          <dependency>
             <groupId>org.eclipse.swt</groupId>
             <artifactId>org.eclipse.swt.gtk.linux.x86_64</artifactId>
@@ -98,10 +131,10 @@
             <version>${swt.version}</version>
         </dependency>
         -->
-        <dependency>
-          <groupId>org.junit</groupId>
-          <artifactId>junit5-api</artifactId>
-          <version>5.0.0-ALPHA</version>
-        </dependency>
-  </dependencies>
+		<dependency>
+			<groupId>org.junit</groupId>
+			<artifactId>junit5-api</artifactId>
+			<version>5.0.0-ALPHA</version>
+		</dependency>
+	</dependencies>
 </project>
