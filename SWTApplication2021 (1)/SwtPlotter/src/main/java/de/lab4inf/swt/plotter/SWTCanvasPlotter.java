@@ -2,7 +2,9 @@ package de.lab4inf.swt.plotter;
 
 import org.eclipse.swt.widgets.Composite;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.function.Function;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
@@ -26,7 +28,7 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 	protected double initXMax, initXMin;
 
 	protected double xMin, xMax, yMin, yMax;
-	protected HashMap<String, Function<Double, Double>>  functions = null;
+	protected HashMap<String, Function<Double, Double>> functions = null;
 
 	/**
 	 * Creates a new instance.
@@ -124,37 +126,26 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 	void drawFunction(PaintEvent e) {
 		double[] xIntervall = getIntervall();
 		double[] yIntervall = getyIntervall();
-		double xSize = xIntervall[1] - xIntervall[0];
-		double ySize = yIntervall[1] - yIntervall[0];
 
 		double scalU = breite / ((xIntervall[1] - xIntervall[0]));
 		double scalV = hoehe / (yIntervall[1] - yIntervall[0]);
 
-		boolean klein = false;
-
-		if (xSize <= 6 * xZoomSchritt || ySize <= 6 * yZoomSchritt)
-			klein = true;
 		for (Function<Double, Double> fct : functions.values()) {
-			int[] polygon = new int[2 * (getMaxU() + 1)];
 
-			int j = 0;
-			for (int i = -getXOrigin(); i <= getMaxU() - getXOrigin(); i++) {
-				double zwischenI = i * ((xIntervall[1] - xIntervall[0]) / getMaxU());
-
-				int yPixel = (int) (scalV * fct.apply(zwischenI));
-
-				if ((yPixel < -getMaxV() || yPixel > getMaxV())) {
-					if (!zoomOn) {
-						if (!klein)
-							continue;
-					} else if (!klein)
-						continue;
-
+			List<Integer> list = new ArrayList<Integer>();
+			for (int k = -getXOrigin(); k <= getMaxU() - getXOrigin(); k=k+1) {
+				double zwischenK = k * ((xIntervall[1] - xIntervall[0]) / getMaxU());
+				int yPixel = (int) (scalV * fct.apply(zwischenK));
+				if (!(yPixel < -getMaxV() || yPixel > getMaxV())) {
+					list.add(translateU(zwischenK * scalU));
+					list.add(translateV(scalV * fct.apply(zwischenK)));
 				}
-				polygon[2 * j] = translateU(zwischenI * scalU);
-				polygon[2 * j + 1] = translateV(scalV * fct.apply(zwischenI));
-				j = j + 1;
 			}
+			
+			int[] polygon = new int[list.size()]; 
+			for(int i=0; i<list.size(); i++)
+				polygon[i]= list.get(i);
+
 			e.gc.setLineWidth(1);
 			e.gc.drawPolyline(polygon);
 		}
@@ -356,11 +347,11 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 		return;
 	}
 
-	public void setFcts(HashMap<String, Function<Double, Double>>  fctSet) {
+	public void setFcts(HashMap<String, Function<Double, Double>> fctSet) {
 		this.functions = fctSet;
 	}
 
-	public HashMap<String, Function<Double, Double>>  getFcts() {
+	public HashMap<String, Function<Double, Double>> getFcts() {
 		return this.functions;
 	}
 
