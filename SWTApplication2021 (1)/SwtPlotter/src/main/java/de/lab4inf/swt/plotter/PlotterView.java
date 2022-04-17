@@ -4,7 +4,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.function.Function;
 
 import org.eclipse.swt.SWT;
@@ -59,9 +58,6 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		this.functionList = functions;
 	}
 
-	private List getFunctionList() {
-		return this.functionList;
-	}
 
 	public void setCanvas(SWTCanvasPlotter myCanvas) {
 		this.canvas = myCanvas;

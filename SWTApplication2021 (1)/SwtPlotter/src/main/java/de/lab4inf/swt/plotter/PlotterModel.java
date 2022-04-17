@@ -3,7 +3,6 @@ package de.lab4inf.swt.plotter;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.function.Function;
 

@@ -53,7 +53,6 @@ public class PlotterController implements PropertyChangeListener {
 		}
 		
 		else if(evt.getPropertyName() ==  "removeFunctions") {
-			String input= (String) evt.getNewValue();
 			modell.removeFunctions((String) evt.getNewValue());
 		}
 

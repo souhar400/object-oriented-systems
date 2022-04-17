@@ -3,7 +3,6 @@ package de.lab4inf.swt.plotter;
 import org.eclipse.swt.widgets.Composite;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.function.Function;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
