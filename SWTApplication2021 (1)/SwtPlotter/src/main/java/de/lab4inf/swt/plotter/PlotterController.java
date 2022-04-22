@@ -2,6 +2,8 @@ package de.lab4inf.swt.plotter;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 import javax.script.Bindings;
@@ -16,7 +18,8 @@ public class PlotterController implements PropertyChangeListener {
 
 	static ScriptEngineManager factory = new ScriptEngineManager();
 	static ScriptEngine engine = factory.getEngineByName("nashorn");
-
+	static JSEngine jsEngine = new JSEngine();
+	
 	public PlotterController(PlotterModel modell, PlotterView view) {
 		this.modell = modell;
 		this.view = view;
@@ -33,6 +36,8 @@ public class PlotterController implements PropertyChangeListener {
 			Bindings bindings = engine.createBindings();
 
 			String script = evt.getNewValue().toString();
+			Map.Entry<String, Function<Double,Double>> result= jsEngine.parser(script);
+
 			Function<Double, Double> fct = x -> {
 				bindings.put("x", x);
 				try {
@@ -45,7 +50,8 @@ public class PlotterController implements PropertyChangeListener {
 
 			};
 
-			modell.addFunction(script, fct);
+			modell.addFunction(result.getKey(), result.getValue());
+			//modell.addFunction(script, fct);
 		}
 		
 		else if(evt.getPropertyName() == "clear") {

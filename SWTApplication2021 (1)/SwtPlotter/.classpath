@@ -13,7 +13,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>
 			<attribute name="module" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
@@ -25,16 +25,16 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="var" path="M2_REPO/org/eclipse/swt"/>
-	<classpathentry kind="lib" path="/home/souhail/.m2/repository/org/ow2/asm/asm-util/7.3.1/asm-util-7.3.1-sources.jar"/>
-	<classpathentry kind="lib" path="/home/souhail/.m2/repository/org/ow2/asm/asm-util/7.3.1/asm-util-7.3.1.jar"/>
-	<classpathentry kind="lib" path="/home/souhail/.m2/repository/org/ow2/asm/asm-tree/7.3.1/asm-tree-7.3.1-sources.jar"/>
-	<classpathentry kind="lib" path="/home/souhail/.m2/repository/org/ow2/asm/asm-tree/7.3.1/asm-tree-7.3.1.jar"/>
-	<classpathentry kind="lib" path="/home/souhail/.m2/repository/org/ow2/asm/asm-test/7.3.1/asm-test-7.3.1.jar"/>
-	<classpathentry kind="lib" path="/home/souhail/.m2/repository/org/ow2/asm/asm-commons/7.3.1/asm-commons-7.3.1-sources.jar"/>
-	<classpathentry kind="lib" path="/home/souhail/.m2/repository/org/ow2/asm/asm-commons/7.3.1/asm-commons-7.3.1.jar"/>
-	<classpathentry kind="lib" path="/home/souhail/.m2/repository/org/ow2/asm/asm-analysis/7.3.1/asm-analysis-7.3.1-sources.jar"/>
-	<classpathentry kind="lib" path="/home/souhail/.m2/repository/org/ow2/asm/asm-analysis/7.3.1/asm-analysis-7.3.1.jar"/>
-	<classpathentry kind="lib" path="/home/souhail/.m2/repository/org/ow2/asm/asm/7.3.1/asm-7.3.1-sources.jar"/>
-	<classpathentry kind="lib" path="/home/souhail/.m2/repository/org/ow2/asm/asm/7.3.1/asm-7.3.1.jar"/>
+	<classpathentry kind="lib" path="/home/lukas/.m2/repository/org/ow2/asm/asm-util/7.3.1/asm-util-7.3.1-sources.jar"/>
+	<classpathentry kind="lib" path="/home/lukas/.m2/repository/org/ow2/asm/asm-util/7.3.1/asm-util-7.3.1.jar"/>
+	<classpathentry kind="lib" path="/home/lukas/.m2/repository/org/ow2/asm/asm-tree/7.3.1/asm-tree-7.3.1-sources.jar"/>
+	<classpathentry kind="lib" path="/home/lukas/.m2/repository/org/ow2/asm/asm-tree/7.3.1/asm-tree-7.3.1.jar"/>
+	<classpathentry kind="lib" path="/home/lukas/.m2/repository/org/ow2/asm/asm-test/7.3.1/asm-test-7.3.1.jar"/>
+	<classpathentry kind="lib" path="/home/lukas/.m2/repository/org/ow2/asm/asm-commons/7.3.1/asm-commons-7.3.1-sources.jar"/>
+	<classpathentry kind="lib" path="/home/lukas/.m2/repository/org/ow2/asm/asm-commons/7.3.1/asm-commons-7.3.1.jar"/>
+	<classpathentry kind="lib" path="/home/lukas/.m2/repository/org/ow2/asm/asm-analysis/7.3.1/asm-analysis-7.3.1-sources.jar"/>
+	<classpathentry kind="lib" path="/home/lukas/.m2/repository/org/ow2/asm/asm-analysis/7.3.1/asm-analysis-7.3.1.jar"/>
+	<classpathentry kind="lib" path="/home/lukas/.m2/repository/org/ow2/asm/asm/7.3.1/asm-7.3.1-sources.jar"/>
+	<classpathentry kind="lib" path="/home/lukas/.m2/repository/org/ow2/asm/asm/7.3.1/asm-7.3.1.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

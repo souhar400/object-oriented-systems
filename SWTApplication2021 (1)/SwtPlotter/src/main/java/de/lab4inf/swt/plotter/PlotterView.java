@@ -4,6 +4,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.eclipse.swt.SWT;
@@ -183,6 +184,10 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 
 			@Override
 			public void handleEvent(Event event) {
+				if(removedFunction == null && myText.getText() != null) {
+					removedFunction = myText.getText();
+				}
+				else return;
 				support.firePropertyChange("removeFunctions", null, removedFunction);
 			}
 		});

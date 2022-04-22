@@ -3,7 +3,7 @@ import de.lab4inf.swt.SWTApplication;
 
 public class PlotterApplication extends SWTApplication {
 
-	public static void main(String[] arguments) {
+	public static void main(String[] args) {
 		PlotterModel modell = new PlotterModel();
 		PlotterView view = new PlotterView(modell);
 		

@@ -3,6 +3,7 @@ package de.lab4inf.swt.plotter;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -36,6 +37,11 @@ public class PlotterModel {
 		HashMap<String, Function<Double, Double>> oldMap = this.myFunctions;
 		HashMap<String, Function<Double, Double>> newMap = new HashMap<String, Function<Double, Double>>();
 		newMap = (HashMap<String, Function<Double, Double>>) oldMap.clone();
+		String parts[] = script.split("=");
+		for(Map.Entry<String, Function<Double, Double>> entry : newMap.entrySet()) {
+			String key = entry.getKey(); 
+			if(key.contains(parts[0])) newMap.remove(key);
+		}
 		newMap.put(script, myFunction);
 		myFunctions = newMap;
 		support.firePropertyChange("AddFunction", oldMap, newMap);
