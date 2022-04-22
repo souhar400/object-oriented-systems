@@ -1,6 +1,7 @@
 package de.lab4inf.swt.plotter;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import org.eclipse.swt.widgets.Canvas;
 public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements AffineTrafo, ResizeCanvas {
 
 	private Color myColor;
+
 	private int xOrigin, yOrigin;
 	private int breite, hoehe;
 	double yZoomSchritt, xZoomSchritt;

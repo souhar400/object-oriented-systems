@@ -2,22 +2,16 @@ package de.lab4inf.swt.plotter;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import javax.script.Bindings;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
+
 
 public class PlotterController implements PropertyChangeListener {
 
 	PlotterModel modell;
 	PlotterView view;
 
-	static ScriptEngineManager factory = new ScriptEngineManager();
-	static ScriptEngine engine = factory.getEngineByName("nashorn");
 	static JSEngine jsEngine = new JSEngine();
 	
 	public PlotterController(PlotterModel modell, PlotterView view) {
@@ -32,26 +26,9 @@ public class PlotterController implements PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName() == "functionScript") {
-
-			Bindings bindings = engine.createBindings();
-
 			String script = evt.getNewValue().toString();
 			Map.Entry<String, Function<Double,Double>> result= jsEngine.parser(script);
-
-			Function<Double, Double> fct = x -> {
-				bindings.put("x", x);
-				try {
-					return (Double) engine.eval(script, bindings);
-				} catch (ScriptException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} // Object bindingsResult = engine.eval(script); }
-				return x;// TODO: Throw Exeption that function nicht geparst werden konnte !!!
-
-			};
-
 			modell.addFunction(result.getKey(), result.getValue());
-			//modell.addFunction(script, fct);
 		}
 		
 		else if(evt.getPropertyName() == "clear") {

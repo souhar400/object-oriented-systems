@@ -36,7 +36,7 @@ public class SWTApplication {
      */
     public SWTApplication() {
         logger = Logger.getLogger(getClass().getPackage().getName());
-        display = new Display();
+        display = Display.getDefault();
         mainWindow = new Shell(display, SWT.SHELL_TRIM );
         mainWindow.addDisposeListener((evt) -> setVisible(false));
         createUI();
