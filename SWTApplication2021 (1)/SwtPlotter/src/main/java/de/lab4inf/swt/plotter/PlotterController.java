@@ -29,14 +29,15 @@ public class PlotterController implements PropertyChangeListener {
 			String script = evt.getNewValue().toString();
 			Map.Entry<String, Function<Double,Double>> result= jsEngine.parser(script);
 			modell.addFunction(result.getKey(), result.getValue());
-		}
+			}
 		
 		else if(evt.getPropertyName() == "clear") {
 			modell.clear();
 		}
 		
 		else if(evt.getPropertyName() ==  "removeFunctions") {
-			modell.removeFunctions((String) evt.getNewValue());
+			String toBeRemoved = evt.getNewValue().toString(); 
+			modell.removeFunctions(toBeRemoved);
 		}
 
 	}

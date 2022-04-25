@@ -8,9 +8,8 @@ public class PlotterApplication extends SWTApplication {
 		PlotterView view = new PlotterView(modell);
 		
 		modell.addPropertyChangeListener(view);
-
-		
 		PlotterController controller = new PlotterController(modell, view);
+		
 		view.addPropertyChangeListener(controller);
 		controller.activateView();
 	}

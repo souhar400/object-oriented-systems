@@ -35,7 +35,7 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 	List functionList;
 	String functionScript = "";
 	int[] selections = null;
-	String removedFunction= null;
+	String removedFunction = null;
 
 	private PropertyChangeSupport support;
 
@@ -58,7 +58,6 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 	public void setFunctionList(List functions) {
 		this.functionList = functions;
 	}
-
 
 	public void setCanvas(SWTCanvasPlotter myCanvas) {
 		this.canvas = myCanvas;
@@ -149,7 +148,6 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 
 		addListeners();
 
-
 		clearButton.addListener(SWT.Selection, new Listener() {
 
 			@Override
@@ -165,8 +163,10 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 			public void widgetSelected(SelectionEvent e) {
 				int index = functionsList.getSelectionIndex();
 				if (index == -1)
-					System.out.println("No item selected to be removed...");
-				removedFunction = functionsList.getItem(index);
+					removedFunction = null;
+				else {
+					removedFunction = functionsList.getItem(index);
+				}
 
 			}
 
@@ -184,11 +184,8 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 
 			@Override
 			public void handleEvent(Event event) {
-				if(removedFunction == null && myText.getText() != null) {
-					removedFunction = myText.getText();
-				}
-				else return;
-				support.firePropertyChange("removeFunctions", null, removedFunction);
+				if (removedFunction != null)
+					support.firePropertyChange("removeFunctions", null, removedFunction);
 			}
 		});
 
