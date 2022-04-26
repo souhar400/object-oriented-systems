@@ -109,8 +109,8 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		gd = new GridData(SWT.FILL, SWT.FILL, true, true);
 		area.setLayoutData(gd);
 
-		//TODO
-		//area.setBackground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
+		// TODO
+		// area.setBackground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
 
 		GridData gridData = new GridData();
 		gridData.grabExcessHorizontalSpace = true;
@@ -128,11 +128,59 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		gd = new GridData(SWT.FILL, SWT.FILL, true, true);
 		editMySet.setLayoutData(gd);
 
+		Group coorSystem = new Group(editMySet, SWT.BORDER);
+		coorSystem.setLayout(new GridLayout(4, false));
+		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+		coorSystem.setLayoutData(gd);
+
+		Label xMinLabel = new Label(coorSystem, SWT.NONE);
+		xMinLabel.setText("Xmin ");
+		gd = new GridData(SWT.LEFT, SWT.CENTER, false, false);
+		xMinLabel.setLayoutData(gd);
+
+		Text myXminText = new Text(coorSystem, SWT.BORDER);
+		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+		myXminText.setText(String.valueOf(canvas.getIntervall()[0]));
+		myXminText.setLayoutData(gd);
+
+		Label xMaxLabel = new Label(coorSystem, SWT.NONE);
+		xMaxLabel.setText("Xmax ");
+		gd = new GridData(SWT.LEFT, SWT.CENTER, false, false);
+		xMaxLabel.setLayoutData(gd);
+
+		Text myXmaxText = new Text(coorSystem, SWT.BORDER);
+		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+		myXmaxText.setText(String.valueOf(canvas.getIntervall()[1]));
+		myXmaxText.setLayoutData(gd);
+
+		Label yMinLabel = new Label(coorSystem, SWT.NONE);
+		yMinLabel.setText("Ymin ");
+		gd = new GridData(SWT.LEFT, SWT.CENTER, false, false);
+		yMinLabel.setLayoutData(gd);
+
+		Text myYminText = new Text(coorSystem, SWT.BORDER);
+		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+		myYminText.setLayoutData(gd);
+
+		Label yMaxLabel = new Label(coorSystem, SWT.NONE);
+		yMaxLabel.setText("Ymax ");
+		gd = new GridData(SWT.LEFT, SWT.CENTER, false, false);
+		yMaxLabel.setLayoutData(gd);
+
+		Text myYmaxText = new Text(coorSystem, SWT.BORDER);
+		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+		myYmaxText.setLayoutData(gd);
+
+		Button updateButton = new Button(coorSystem, SWT.PUSH);
+		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+		gd.horizontalSpan = 4;
+		updateButton.setLayoutData(gd);
+		updateButton.setText("Update");
+
 		List functionsList = new List(editMySet, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL);
 		setFunctionList(functionsList);
 		gd = new GridData(SWT.FILL, SWT.FILL, true, true);
 		functionsList.setLayoutData(gd);
-		
 
 		Group addRemoveClean = new Group(editMySet, SWT.BORDER);
 		addRemoveClean.setLayout(new GridLayout(6, false));
@@ -141,22 +189,21 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 
 		Text myText = new Text(addRemoveClean, SWT.BORDER);
 		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
-		gd.horizontalSpan = 4; 
+		gd.horizontalSpan = 4;
 		myText.setLayoutData(gd);
 
-		Combo combo = new Combo(addRemoveClean, SWT.DROP_DOWN | SWT.READ_ONLY); 
+		Combo combo = new Combo(addRemoveClean, SWT.DROP_DOWN | SWT.READ_ONLY);
 		gd = new GridData(SWT.RIGHT, SWT.FILL, false, false);
-		combo.setLayoutData(gd);	
-		combo.setItems(new String[] {"Solid", "Dash", "Dot", "DashDotDot", "DashDot"}); 
+		combo.setLayoutData(gd);
+		combo.setItems(new String[] { "Solid", "Dash", "Dot", "DashDotDot", "DashDot" });
 		combo.select(0);
-		
-		ColorSelector cs = new ColorSelector(addRemoveClean); 
-		cs.setEnabled(true);
-		
-		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
-		gd.horizontalSpan=2; 
 
-		
+		ColorSelector cs = new ColorSelector(addRemoveClean);
+		cs.setEnabled(true);
+
+		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+		gd.horizontalSpan = 2;
+
 		Button addButton = new Button(addRemoveClean, SWT.PUSH);
 		addButton.setLayoutData(gd);
 		addButton.setText("Add");
@@ -177,6 +224,30 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 			public void handleEvent(Event event) {
 				if (event.type == SWT.Selection) {
 					support.firePropertyChange("clear", 0, 1);
+				}
+			}
+		});
+
+		updateButton.addListener(SWT.Selection, new Listener() {
+
+			@Override
+			public void handleEvent(Event event) {
+				if (event.type == SWT.Selection) {
+					if (!myXminText.getText().isBlank() && !myXmaxText.getText().isBlank()) {
+						canvas.setDrawIntervall(Double.valueOf(myXminText.getText()),
+								Double.valueOf(myXmaxText.getText()));
+//						myXminText.setText("");
+//						myXmaxText.setText("");
+					}
+
+					if (!myYminText.getText().isBlank() && !myYminText.getText().isBlank()) {
+						canvas.setyIntervall(Double.valueOf(myYminText.getText()),
+								Double.valueOf(myYmaxText.getText()));
+//						myYminText.setText("");
+//						myYmaxText.setText("");
+					}
+					canvas.redraw();
+
 				}
 			}
 		});
@@ -217,25 +288,25 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 			public void handleEvent(Event event) {
 				if (event.type == SWT.Selection) {
 					support.firePropertyChange("functionScript", "", myText.getText());
-					//TODO: support.firePropertyChange("styleLine",0 )
-					//TODO: support.firePropertyChange("color",0 )
+					// TODO: support.firePropertyChange("styleLine",0 )
+					// TODO: support.firePropertyChange("color",0 )
 
 				}
 			}
 		});
-		
+
 		combo.addListener(SWT.Selection, new Listener() {
 
 			@Override
 			public void handleEvent(Event event) {
 				support.firePropertyChange("styleLine", -1, combo.getSelectionIndex());
-				
+
 			}
-			
+
 		});
-		
+
 		cs.addListener(new IPropertyChangeListener() {
-			
+
 			@Override
 			public void propertyChange(org.eclipse.jface.util.PropertyChangeEvent arg0) {
 				support.firePropertyChange("color", null, cs.getColorValue());
