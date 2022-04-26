@@ -106,6 +106,9 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		gd = new GridData(SWT.FILL, SWT.FILL, true, true);
 		area.setLayoutData(gd);
 
+		//TODO
+		//area.setBackground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
+
 		GridData gridData = new GridData();
 		gridData.grabExcessHorizontalSpace = true;
 		gridData.grabExcessVerticalSpace = true;

@@ -3,6 +3,7 @@ package de.lab4inf.swt.plotter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +14,7 @@ import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Path;
 import org.eclipse.swt.widgets.Canvas;
@@ -29,6 +31,8 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 	protected double uScal, vScal;
 	protected double initXMax, initXMin;
 
+	private int schrittweite=2; 
+	
 	protected double xMin, xMax, yMin, yMax;
 	protected HashMap<String, Function<Double, Double>> functions = null;
 
@@ -40,6 +44,7 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 	 */
 	public SWTCanvasPlotter(Composite parent, int style) {
 		super(parent, style);
+		this.setBackground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
 
 		// Set the draw Intervall
 		double myxMin = -5;
@@ -58,6 +63,7 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 		addMouseWheelListener(new MouseWheelListener() {
 			@Override
 			public void mouseScrolled(MouseEvent e) {
+
 				double xZoomSchritt = 0.5;
 				double yZoomSchritt = 0.2;
 				setZoom(xZoomSchritt, yZoomSchritt);
@@ -93,6 +99,7 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 		// Paint Listener
 		addPaintListener(new PaintListener() {
 			public void paintControl(PaintEvent e) {
+
 				Canvas canvas = (Canvas) e.widget;
 				int breite = canvas.getSize().x;
 				int hoehe = canvas.getSize().y;
@@ -113,6 +120,7 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 				// draw the Axis
 				drawAxis(e);
 				drawUnits(e);
+				drawBeschrift(e);
 				if (functions != null)
 					drawFunction(e);
 			}
@@ -126,6 +134,7 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 	}
 
 	void drawFunction(PaintEvent e) {
+
 		double[] xIntervall = getIntervall();
 		double[] yIntervall = getyIntervall();
 
@@ -135,7 +144,7 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 		for (Function<Double, Double> fct : functions.values()) {
 
 			List<Integer> list = new ArrayList<Integer>();
-			for (int k = -getXOrigin(); k <= getMaxU() - getXOrigin(); k=k+1) {
+			for (int k = -getXOrigin(); k <= getMaxU() - getXOrigin(); k = k + 1) {
 				double zwischenK = k * ((xIntervall[1] - xIntervall[0]) / getMaxU());
 				int yPixel = (int) (scalV * fct.apply(zwischenK));
 				if (!(yPixel < -getMaxV() || yPixel > getMaxV())) {
@@ -143,10 +152,10 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 					list.add(translateV(scalV * fct.apply(zwischenK)));
 				}
 			}
-			
-			int[] polygon = new int[list.size()]; 
-			for(int i=0; i<list.size(); i++)
-				polygon[i]= list.get(i);
+
+			int[] polygon = new int[list.size()];
+			for (int i = 0; i < list.size(); i++)
+				polygon[i] = list.get(i);
 
 			e.gc.setLineWidth(1);
 			e.gc.drawPolyline(polygon);
@@ -267,31 +276,72 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 		return this.hoehe;
 	}
 
+	void drawBeschrift(PaintEvent e) {
+
+		Font font = new Font(e.gc.getDevice(), "Arial", 8, SWT.NONE);
+		e.gc.setFont(font);
+		e.gc.setForeground(e.gc.getDevice().getSystemColor(SWT.COLOR_BLUE));
+
+		double j = 1.0*schrittweite;
+		for (int i = ((int) uScal)*schrittweite; i <= getMaxU() - getXOrigin(); i = i + ((int) uScal)*schrittweite) {
+			String label = String.valueOf(j);
+			e.gc.drawString(label, translateU(i - 6), translateV(-7), true);
+			j = j + schrittweite;
+		}
+		
+		j = -1.0*schrittweite;		
+		for (int i = -((int)uScal)*schrittweite; i >= -getXOrigin(); i = i - ((int) uScal)*schrittweite) {
+			String label = String.valueOf(j);
+			e.gc.drawString(label, translateU(i - 10), translateV(-7), true);
+			j = j - schrittweite;
+		}
+		
+		j=1.0*schrittweite; 
+		for (int i = ((int)vScal)*schrittweite; i <= getYOrigin(); i = i + ((int) vScal)*schrittweite) {
+			String label = String.valueOf(j);
+			e.gc.drawString(label, translateU(- 20), translateV(i+5), true);
+			j = j + schrittweite;
+		}
+		
+		j=-1.0*schrittweite;
+		for (int i = ((int)-vScal)*schrittweite; i >= -(getMaxV() - getYOrigin()); i = i - ((int) vScal)*schrittweite){
+			String label = String.valueOf(j);
+			e.gc.drawString(label, translateU(- 25), translateV(i+5), true);
+			j = j - schrittweite;
+		}
+		
+
+	}
+
 	void drawUnits(PaintEvent e) {
-		for (int i = 0; i <= getMaxU() - getXOrigin(); i = i + (int) uScal) {
+
+		for (int i = 0; i <= getMaxU() - getXOrigin(); i = i + ((int) uScal)*schrittweite) {
 			e.gc.drawLine(translateU(i), translateV(-3), translateU(i), translateV(3));
 		}
 
-		for (int i = 0; i >= -getXOrigin(); i = i - (int) uScal) {
+		for (int i = 0; i >= -getXOrigin(); i = i - ((int) uScal)*schrittweite) {
 			e.gc.drawLine(translateU(i), translateV(-3), translateU(i), translateV(3));
+
 		}
 
-		for (int i = 0; i <= getYOrigin(); i = i + (int) vScal) {
+		for (int i = 0; i <= getYOrigin(); i = i + ((int) vScal)*schrittweite) {
 			e.gc.drawLine(translateU(-3), translateV(i), translateU(3), translateV(i));
 		}
 
-		for (int i = 0; i >= -(getMaxV() - getYOrigin()); i = i - (int) vScal) {
+		for (int i = 0; i >= -(getMaxV() - getYOrigin()); i = i - ((int) vScal)*schrittweite) {
 			e.gc.drawLine(translateU(-3), translateV(i), translateU(3), translateV(i));
 		}
 	}
 
 	void drawAxis(PaintEvent e) {
+
 		// draw the Axis
-		e.gc.setLineWidth(1);
+		e.gc.setLineWidth(3);
 		e.gc.setForeground(e.gc.getDevice().getSystemColor(SWT.COLOR_BLACK));
 		e.gc.setBackground(e.gc.getDevice().getSystemColor(SWT.COLOR_BLACK));
 		drawArrow(e.gc, 0, getYOrigin(), breite, getYOrigin(), 8, Math.toRadians(40));
 		drawArrow(e.gc, getXOrigin(), hoehe, getXOrigin(), 0, 8, Math.toRadians(40));
+
 	}
 
 	public static void drawArrow(GC gc, int x1, int y1, int x2, int y2, double arrowLength, double arrowAngle) {
