@@ -34,7 +34,7 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 	private int schrittweite=2; 
 	
 	protected double xMin, xMax, yMin, yMax;
-	protected HashMap<String, Function<Double, Double>> functions = null;
+	protected HashMap<String, PlotterFunction> plotterFunctions = null;
 
 	/**
 	 * Creates a new instance.
@@ -121,7 +121,7 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 				drawAxis(e);
 				drawUnits(e);
 				drawBeschrift(e);
-				if (functions != null)
+				if (plotterFunctions != null)
 					drawFunction(e);
 			}
 		});
@@ -141,15 +141,16 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 		double scalU = breite / ((xIntervall[1] - xIntervall[0]));
 		double scalV = hoehe / (yIntervall[1] - yIntervall[0]);
 
-		for (Function<Double, Double> fct : functions.values()) {
+		for (PlotterFunction fct : plotterFunctions.values()) {
+			Function<Double, Double> myFct = fct.function; 
 
 			List<Integer> list = new ArrayList<Integer>();
 			for (int k = -getXOrigin(); k <= getMaxU() - getXOrigin(); k = k + 1) {
 				double zwischenK = k * ((xIntervall[1] - xIntervall[0]) / getMaxU());
-				int yPixel = (int) (scalV * fct.apply(zwischenK));
+				int yPixel = (int) (scalV * myFct.apply(zwischenK));
 				if (!(yPixel < -getMaxV() || yPixel > getMaxV())) {
 					list.add(translateU(zwischenK * scalU));
-					list.add(translateV(scalV * fct.apply(zwischenK)));
+					list.add(translateV(scalV * myFct.apply(zwischenK)));
 				}
 			}
 
@@ -157,7 +158,8 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 			for (int i = 0; i < list.size(); i++)
 				polygon[i] = list.get(i);
 
-			e.gc.setLineWidth(1);
+			e.gc.setLineWidth(2);
+			e.gc.setLineStyle(fct.lineStyle); 
 			e.gc.drawPolyline(polygon);
 		}
 	}
@@ -399,12 +401,12 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 		return;
 	}
 
-	public void setFcts(HashMap<String, Function<Double, Double>> fctSet) {
-		this.functions = fctSet;
+	public void setFcts(HashMap<String, PlotterFunction> fctSet) {
+		this.plotterFunctions= fctSet;
 	}
 
-	public HashMap<String, Function<Double, Double>> getFcts() {
-		return this.functions;
+	public HashMap<String, PlotterFunction> getFcts() {
+		return this.plotterFunctions;
 	}
 
 	/**

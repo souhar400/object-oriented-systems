@@ -11,6 +11,8 @@ public class PlotterController implements PropertyChangeListener {
 
 	PlotterModel modell;
 	PlotterView view;
+	int lineStyle=0; 
+	int color=0; 
 
 	static JSEngine jsEngine = new JSEngine();
 	
@@ -27,8 +29,9 @@ public class PlotterController implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName() == "functionScript") {
 			String script = evt.getNewValue().toString();
-			Map.Entry<String, Function<Double,Double>> result= jsEngine.parser(script);
-			modell.addFunction(result.getKey(), result.getValue());
+			Map.Entry<String, Function<Double, Double>> result= jsEngine.parser(script);
+			PlotterFunction myFct = new PlotterFunction(result.getValue(), result.getKey(), 9, this.lineStyle+1);
+			modell.addFunction(result.getKey(), myFct);
 			}
 		
 		else if(evt.getPropertyName() == "clear") {
@@ -38,6 +41,11 @@ public class PlotterController implements PropertyChangeListener {
 		else if(evt.getPropertyName() ==  "removeFunctions") {
 			String toBeRemoved = evt.getNewValue().toString(); 
 			modell.removeFunctions(toBeRemoved);
+		}
+		
+		
+		else if(evt.getPropertyName() ==  "styleLine") {
+			this.lineStyle= (int) evt.getNewValue(); 
 		}
 
 	}

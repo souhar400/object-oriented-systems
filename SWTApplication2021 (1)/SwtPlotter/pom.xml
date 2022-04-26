@@ -16,6 +16,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<swt.version>4.3</swt.version>
+		<jface.version>3.3.0-I20070606-0010</jface.version>
 	</properties>
 	<!-- include a repo with SWT support -->
 	<repositories>
@@ -119,5 +120,11 @@
 			<artifactId>junit5-api</artifactId>
 			<version>5.0.0-ALPHA</version>
 		</dependency>
+		<dependency>
+			<groupId>org.eclipse</groupId>
+			<artifactId>jface</artifactId>
+			<version>${jface.version}</version>
+		</dependency>
+		
 	</dependencies>
 </project>

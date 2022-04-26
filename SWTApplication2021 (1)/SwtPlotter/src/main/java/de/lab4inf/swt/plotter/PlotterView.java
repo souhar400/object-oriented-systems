@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.function.Function;
 
+import org.eclipse.jface.preference.ColorSelector;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
@@ -15,6 +16,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
@@ -39,7 +41,7 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 
 	private PropertyChangeSupport support;
 
-	HashMap<String, Function<Double, Double>> functions;
+	HashMap<String, PlotterFunction> plotterFunctions;
 
 	public PlotterView(PlotterModel modell) {
 		super();
@@ -129,24 +131,41 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		setFunctionList(functionsList);
 		gd = new GridData(SWT.FILL, SWT.FILL, true, true);
 		functionsList.setLayoutData(gd);
+		
 
 		Group addRemoveClean = new Group(editMySet, SWT.BORDER);
-		addRemoveClean.setLayout(new GridLayout(4, false));
+		addRemoveClean.setLayout(new GridLayout(6, false));
 		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
 		addRemoveClean.setLayoutData(gd);
 
 		Text myText = new Text(addRemoveClean, SWT.BORDER);
 		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+		gd.horizontalSpan = 4; 
 		myText.setLayoutData(gd);
 
+		Combo combo = new Combo(addRemoveClean, SWT.DROP_DOWN | SWT.READ_ONLY); 
+		gd = new GridData(SWT.RIGHT, SWT.FILL, false, false);
+		combo.setLayoutData(gd);	
+		combo.setItems(new String[] {"Solid", "Dash", "Dot", "DashDotDot", "DashDot"}); 
+		combo.select(0);
+		
+		ColorSelector cs = new ColorSelector(addRemoveClean); 
+		cs.setEnabled(true);
+		
+		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+		gd.horizontalSpan=2; 
+
+		
 		Button addButton = new Button(addRemoveClean, SWT.PUSH);
+		addButton.setLayoutData(gd);
 		addButton.setText("Add");
 
 		Button clearButton = new Button(addRemoveClean, SWT.PUSH);
+		clearButton.setLayoutData(gd);
 		clearButton.setText("Clear");
 
 		Button removeButton = new Button(addRemoveClean, SWT.PUSH);
-		removeButton.setLayoutData(gridData);
+		removeButton.setLayoutData(gd);
 		removeButton.setText("Remove");
 
 		addListeners();
@@ -197,8 +216,21 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 			public void handleEvent(Event event) {
 				if (event.type == SWT.Selection) {
 					support.firePropertyChange("functionScript", "", myText.getText());
+					//TODO: support.firePropertyChange("styleLine",0 )
+					//TODO: support.firePropertyChange("color",0 )
+
 				}
 			}
+		});
+		
+		combo.addListener(SWT.Selection, new Listener() {
+
+			@Override
+			public void handleEvent(Event event) {
+				support.firePropertyChange("styleLine", -1, combo.getSelectionIndex());
+				
+			}
+			
 		});
 
 		return area;
@@ -219,12 +251,12 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 
 	}
 
-	void setFunctions(HashMap<String, Function<Double, Double>> functions) {
-		this.functions = functions;
+	void setFunctions(HashMap<String, PlotterFunction> plotterFunctions) {
+		this.plotterFunctions = plotterFunctions;
 	}
 
-	HashMap<String, Function<Double, Double>> getFunctions() {
-		return this.functions;
+	HashMap<String, PlotterFunction> getFunctions() {
+		return this.plotterFunctions;
 	}
 
 	@Override
@@ -232,23 +264,23 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 
 		if (evt.getPropertyName() == "AddFunction") {
 
-			functions = modell.getFunctions();
+			plotterFunctions = modell.getFunctions();
 			this.functionList.removeAll();
-			for (String a : functions.keySet())
+			for (String a : plotterFunctions.keySet())
 				this.functionList.add(a);
-			updateCanvas(functions);
+			updateCanvas(plotterFunctions);
 		} else if (evt.getPropertyName() == "clearFunctions") {
-			functions = modell.getFunctions();
+			plotterFunctions = modell.getFunctions();
 			this.functionList.removeAll();
-			updateCanvas(functions);
+			updateCanvas(plotterFunctions);
 		}
 
 		else if (evt.getPropertyName() == "removeFunction") {
-			functions = modell.getFunctions();
+			plotterFunctions = modell.getFunctions();
 			this.functionList.removeAll();
-			for (String a : functions.keySet())
+			for (String a : plotterFunctions.keySet())
 				this.functionList.add(a);
-			updateCanvas(functions);
+			updateCanvas(plotterFunctions);
 		}
 
 	}
@@ -263,7 +295,7 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		support.removePropertyChangeListener(pcl);
 	}
 
-	public void updateCanvas(HashMap<String, Function<Double, Double>> fctSet) {
+	public void updateCanvas(HashMap<String, PlotterFunction> fctSet) {
 		canvas.setFcts(fctSet);
 		canvas.redraw();
 	}
