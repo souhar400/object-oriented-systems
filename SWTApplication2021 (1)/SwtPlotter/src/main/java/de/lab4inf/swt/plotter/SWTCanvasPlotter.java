@@ -159,6 +159,7 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 				polygon[i] = list.get(i);
 
 			e.gc.setLineWidth(2);
+			e.gc.setForeground(new Color(null, fct.color[0], fct.color[1], fct.color[2]));  
 			e.gc.setLineStyle(fct.lineStyle); 
 			e.gc.drawPolyline(polygon);
 		}
@@ -312,6 +313,13 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 			j = j - schrittweite;
 		}
 		
+		font = new Font(e.gc.getDevice(), "Arial", 15, SWT.NONE);
+		e.gc.setFont(font);
+		e.gc.setForeground(e.gc.getDevice().getSystemColor(SWT.COLOR_BLUE));
+
+		e.gc.drawString("x", translateU(getMaxU() - getXOrigin() - 30),  translateV(25), true); 
+		
+		e.gc.drawString("f(x)", translateU(10),  translateV(getMaxV() - getYOrigin() - 10), true);
 
 	}
 

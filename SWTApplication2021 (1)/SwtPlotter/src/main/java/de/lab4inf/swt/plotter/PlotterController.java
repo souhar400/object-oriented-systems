@@ -5,6 +5,8 @@ import java.beans.PropertyChangeListener;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.eclipse.swt.graphics.RGB;
+
 
 
 public class PlotterController implements PropertyChangeListener {
@@ -12,7 +14,7 @@ public class PlotterController implements PropertyChangeListener {
 	PlotterModel modell;
 	PlotterView view;
 	int lineStyle=0; 
-	int color=0; 
+	int[] color = new int[] {0,0,0};
 
 	static JSEngine jsEngine = new JSEngine();
 	
@@ -30,7 +32,8 @@ public class PlotterController implements PropertyChangeListener {
 		if (evt.getPropertyName() == "functionScript") {
 			String script = evt.getNewValue().toString();
 			Map.Entry<String, Function<Double, Double>> result= jsEngine.parser(script);
-			PlotterFunction myFct = new PlotterFunction(result.getValue(), result.getKey(), 9, this.lineStyle+1);
+			
+			PlotterFunction myFct = new PlotterFunction(result.getValue(), result.getKey(), this.color, this.lineStyle+1);
 			modell.addFunction(result.getKey(), myFct);
 			}
 		
@@ -46,6 +49,14 @@ public class PlotterController implements PropertyChangeListener {
 		
 		else if(evt.getPropertyName() ==  "styleLine") {
 			this.lineStyle= (int) evt.getNewValue(); 
+		}
+		
+		else if(evt.getPropertyName() ==  "color") {
+			RGB mycolor = (RGB) evt.getNewValue(); 
+			this.color = new int[] {mycolor.red,mycolor.green, mycolor.blue}; 
+//			this.color[0] = ;
+//			this.color[1] = mycolor.green;
+//			this.color[2] = mycolor.blue;
 		}
 
 	}

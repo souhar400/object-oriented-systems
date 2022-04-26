@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import org.eclipse.jface.preference.ColorSelector;
+import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
@@ -231,6 +232,14 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 				
 			}
 			
+		});
+		
+		cs.addListener(new IPropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(org.eclipse.jface.util.PropertyChangeEvent arg0) {
+				support.firePropertyChange("color", null, cs.getColorValue());
+			}
 		});
 
 		return area;
