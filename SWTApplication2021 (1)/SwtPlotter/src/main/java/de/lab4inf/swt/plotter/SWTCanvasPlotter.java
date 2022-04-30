@@ -142,7 +142,7 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 		double scalV = hoehe / (yIntervall[1] - yIntervall[0]);
 
 		for (PlotterFunction fct : plotterFunctions.values()) {
-			Function<Double, Double> myFct = fct.function; 
+			Function<Double, Double> myFct = fct.getFunction(); 
 
 			List<Integer> list = new ArrayList<Integer>();
 			for (int k = -getXOrigin(); k <= getMaxU() - getXOrigin(); k = k + 1) {
@@ -159,8 +159,9 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 				polygon[i] = list.get(i);
 
 			e.gc.setLineWidth(2);
-			e.gc.setForeground(new Color(null, fct.color[0], fct.color[1], fct.color[2]));  
-			e.gc.setLineStyle(fct.lineStyle); 
+			int[] color = fct.getColor();
+			e.gc.setForeground(new Color(null, color[0], color[1], color[2]));  
+			e.gc.setLineStyle(fct.getLineStyle()); 
 			e.gc.drawPolyline(polygon);
 		}
 	}

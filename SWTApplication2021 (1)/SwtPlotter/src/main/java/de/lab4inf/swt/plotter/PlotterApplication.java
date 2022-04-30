@@ -1,7 +1,7 @@
 package de.lab4inf.swt.plotter;
-import de.lab4inf.swt.SWTApplication;
 
-public class PlotterApplication extends SWTApplication {
+
+public class PlotterApplication {
 
 	public static void main(String[] args) {
 		PlotterModel modell = new PlotterModel();
