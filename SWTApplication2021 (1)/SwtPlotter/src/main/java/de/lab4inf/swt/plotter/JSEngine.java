@@ -44,15 +44,7 @@ public class JSEngine {
 			input.trim();
 			String parts[] = input.split("=");
 			parts[1] = replaceFunctions(parts[1], functions);
-//			functions.forEach((key, value) -> {
-//				if (parts[0].equals(key))
-//					functions.remove(key);
-//				if (parts[1].matches("(.*)[a-z]\\((.*)\\)(.*)")) {
-//					// TODO : mehrfach verschachtelt
-//					String functionReplacement = value.getName().split("=")[1];
-//					parts[1] = parts[1].replace(key, functionReplacement);
-//				}
-//			});
+
 			javaScriptEngine.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
 			try {
 				for (String key : bindings.keySet()) {
@@ -64,7 +56,7 @@ public class JSEngine {
 				bindings.put("myfunc", parts[1]);
 			} catch (Exception e) {
 				e.printStackTrace();
-				return Map.entry("", new PlotterFunction());
+				return Map.entry("", new PlotterFunction(emptyDummy, "", null, 0));
 			}
 			javaScriptEngine.eval("var regex = /(sin)|(cos)|(log)|(tan)|(sqrt)|(exp)/gi;"
 					+ "var myfunc=myfunc.replace(regex, 'Math.$&');"
@@ -78,7 +70,7 @@ public class JSEngine {
 			return Map.entry(parts[0], fct);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Map.entry("", new PlotterFunction());
+			return Map.entry("", new PlotterFunction(emptyDummy, "", null, 0));
 		}
 	}
 
