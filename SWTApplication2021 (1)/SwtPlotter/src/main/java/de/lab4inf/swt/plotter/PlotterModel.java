@@ -52,9 +52,11 @@ public class PlotterModel {
 		HashMap<String, PlotterFunction> oldMap = this.plotterFunctions;
 		HashMap<String, PlotterFunction> newMap = new HashMap<String, PlotterFunction>();
 		newMap = (HashMap<String, PlotterFunction>) oldMap.clone();
-		newMap.remove(myFunctionString);
+		myFunctionString.trim();
+		String parts[] = myFunctionString.split("=");
+		newMap.remove(parts[0]);
 		plotterFunctions = newMap;
-		support.firePropertyChange("removeFunction", oldMap, newMap);
+		support.firePropertyChange("removeFunction", null, newMap);
 	}
 
 	protected void clear() {

@@ -353,12 +353,13 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 			plotterFunctions = modell.getFunctions();
 			this.functionList.removeAll();
 			updateCanvas(plotterFunctions);
-		}
-		else if (evt.getPropertyName() == "removeFunction") {
+		} else if (evt.getPropertyName() == "removeFunction") {
 			plotterFunctions = modell.getFunctions();
 			this.functionList.removeAll();
-			for (String a : plotterFunctions.keySet())
+			for (String a : plotterFunctions.keySet()) {
 				this.functionList.add(plotterFunctions.get(a).getName());
+			}
+
 			updateCanvas(plotterFunctions);
 		}
 
