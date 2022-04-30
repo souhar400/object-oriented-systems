@@ -5,6 +5,7 @@ import java.util.function.Function;
 public class PlotterFunction {
 	private Function<Double, Double> function;
 	private String name;
+	private String replacedVal;
 	private int[] color;
 	private int lineStyle;
 	public PlotterFunction() {}
@@ -41,6 +42,12 @@ public class PlotterFunction {
 	}
 	public int getLineStyle() {
 		return lineStyle;
+	}
+	public String getReplacedVal() {
+		return replacedVal;
+	}
+	public void setReplacedVal(String replacedVal) {
+		this.replacedVal = replacedVal;
 	}
 	
 }

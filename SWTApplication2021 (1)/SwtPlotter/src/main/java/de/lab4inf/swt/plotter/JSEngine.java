@@ -36,6 +36,7 @@ public class JSEngine {
 	 * @param input Function declaration as a String
 	 * @return Function<Double,Double>
 	 */
+	@SuppressWarnings("unchecked")
 	public Map.Entry<String, PlotterFunction> parser(String input, HashMap<String, PlotterFunction> functions) {
 		Function<Double, Double> emptyDummy = x -> {
 			return 0.0;
@@ -46,18 +47,18 @@ public class JSEngine {
 			parts[1] = replaceFunctions(parts[1], functions);
 
 			javaScriptEngine.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
-			try {
-				for (String key : bindings.keySet()) {
-					if (parts[1].contains(key)) {
-						parts[1] = parts[1].replace(key, (String) bindings.get(key));
-					}
-				}
-				bindings.put(parts[0], parts[1]);
-				bindings.put("myfunc", parts[1]);
-			} catch (Exception e) {
-				e.printStackTrace();
-				return Map.entry("", new PlotterFunction(emptyDummy, "", null, 0));
-			}
+//			try {
+//				for (String key : bindings.keySet()) {
+//					if (parts[1].contains(key)) {
+//						parts[1] = parts[1].replace(key, (String) bindings.get(key));
+//					}
+//				}
+			bindings.put(parts[0], parts[1]);
+			bindings.put("myfunc", "(" + parts[1]+ ")");
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//				return Map.entry("", new PlotterFunction(emptyDummy, "", null, 0));
+//			}
 			javaScriptEngine.eval("var regex = /(sin)|(cos)|(log)|(tan)|(sqrt)|(exp)/gi;"
 					+ "var myfunc=myfunc.replace(regex, 'Math.$&');"
 					+ "var func = new Function('x' ,'return ' +  myfunc);");
@@ -66,7 +67,7 @@ public class JSEngine {
 					.eval("new java.util.function.Function(func)");
 			bindings.remove("myfunc");
 			PlotterFunction fct = new PlotterFunction(f, input, null, 0);
-
+			fct.setReplacedVal(parts[1]);
 			return Map.entry(parts[0], fct);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -76,41 +77,30 @@ public class JSEngine {
 
 	private String replaceFunctions(String function, Map<String, PlotterFunction> fctMap) {
 		String functionRest = function;
-		int counter = 0;
-		for (Character c : functionRest.toCharArray()) {
-			if (Character.isAlphabetic(c) && c != 'x') {
-				counter++;
-			}
-		}
-		String[] fctKeys = new String[counter];
+		String fctKey;
+
 		Pattern findInner = Pattern.compile("(?<![a-z])[a-z]\\(x{0,1}y{0,1}\\)");
-		int i = 0;
+		Pattern findOuter = Pattern.compile("(?<![a-z])[a-z]\\([^)]*\\)");
+		Pattern xVal = Pattern.compile("\\(.*\\)");
 		while (functionRest.matches("(.*)(?<![a-z])[a-z]\\((.*)\\)(.*)")) {
 			Matcher m = findInner.matcher(functionRest);
+			Matcher outer = findOuter.matcher(functionRest);
 			if (m.find()) {
-				fctKeys[i] = m.group();
-				functionRest = functionRest.replace(fctKeys[i], "y");
-				fctKeys[i] = fctKeys[i].replace("y", "x");
-			}
-			i++;
-		}
-		for (int j = 0; j < fctKeys.length-1; j++) {
-			if (fctKeys[j] != null ) {
-				String fct1 = fctMap.get(fctKeys[j]).getName().split("=")[1];
-				String fct2 = new String();
-				if(fctKeys[j+1] != null) fct2 = fctMap.get(fctKeys[j+1]).getName().split("=")[1];
-				else fct2 = null;
-				if(fct2 != null) {
-					if(fct2.contains(fctKeys[j])) fct2 = fct2.replace(fctKeys[j], fct1);
-					fct2 = fct2.replace("x", fct1);
-					functionRest = functionRest.replace("y", fct2);
-					function = functionRest;
+				fctKey = m.group();
+				functionRest = functionRest.replace(fctKey, fctMap.get(fctKey).getReplacedVal());
+			} else {
+				if (outer.find()) {
+					fctKey = outer.group();
+					Matcher fctSplitter = xVal.matcher(fctKey);
+					if (fctSplitter.find()) {
+						fctKey = fctKey.replace(fctSplitter.group(), "(x)");
+						String fct = fctMap.get(fctKey).getReplacedVal();
+						fct = fct.replace("x", fctSplitter.group());
+						functionRest = functionRest.replace(outer.group(), fct);
+					}
 				}
-				else
-					function = function.replace(fctKeys[j], fct1);
 			}
 		}
-		return function;
+		return functionRest;
 	}
-
 }
