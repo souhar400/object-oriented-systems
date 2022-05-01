@@ -86,15 +86,22 @@ public class SWTApplication {
         gd = new GridData(SWT.FILL, SWT.FILL, true, true);
         appArea.setLayoutData(gd);
         
+      //Einstellungen Bar
+        Composite pb = createParamBar(appArea);
+        gd = new GridData(SWT.FILL, SWT.NONE, true, false);
+        pb.setLayoutData(gd);
+
+
+        //Content Area
+        Composite ca = createContentArea(appArea);
+        gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+        ca.setLayoutData(gd);
+        
         //Status Bar
         Composite sb = createStatusBar(appArea);
         gd = new GridData(SWT.FILL, SWT.NONE, true, false);
         sb.setLayoutData(gd);
 
-    	//Content Area
-        Composite ca = createContentArea(appArea);
-        gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-        ca.setLayoutData(gd);
         
 
         init(appArea);
@@ -120,6 +127,14 @@ public class SWTApplication {
      * @return ToolBar instance
      */
     protected ToolBar createToolBar(Composite parent) {
+        ToolBar toolbar = new ToolBar(parent, SWT.BORDER | SWT.HORIZONTAL);
+        ToolItem item = new ToolItem(toolbar, SWT.NONE);
+        item.setText("Exit");
+        item.addListener(SWT.Selection, (evt) -> setVisible(false));
+        return toolbar;
+    }
+    
+    protected Composite createParamBar(Composite parent) {
         ToolBar toolbar = new ToolBar(parent, SWT.BORDER | SWT.HORIZONTAL);
         ToolItem item = new ToolItem(toolbar, SWT.NONE);
         item.setText("Exit");

@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
@@ -79,6 +80,30 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		exitItem.addListener(SWT.Selection, (evt) -> setVisible(false));
 		return toolbar;
 	}
+	
+	
+	// StatusBar
+		protected Composite createParamBar(Composite parent) {
+			GridData gd;
+			Group sb = new Group(parent, SWT.HORIZONTAL);
+			sb.setText("Parameters");
+			sb.setLayoutData( new GridData(SWT.FILL, SWT.CENTER, true, false)); 
+			sb.setLayout(new GridLayout(10, false));
+
+			Label statusLabel = new Label(sb, SWT.NONE);
+			statusLabel.setText("Schritteweite der Units : ");
+			Scale steps = new Scale(sb, SWT.BORDER | SWT.HORIZONTAL);
+			steps.setMaximum(10);
+			steps.setMinimum(1);
+			steps.setPageIncrement(1);
+			steps.setSelection(1);
+			
+			steps.addListener(SWT.Selection, (evt) -> {
+				canvas.schrittweite = steps.getSelection(); 
+				updateCanvas(plotterFunctions);
+			});
+			return sb; 
+		}
 
 	// StatusBar
 	protected Composite createStatusBar(Composite parent) {
@@ -346,20 +371,33 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 
 			plotterFunctions = modell.getFunctions();
 			this.functionList.removeAll();
-			for (String a : plotterFunctions.keySet())
+			String myLabel=""; 
+			for (String a : plotterFunctions.keySet()) {
 				this.functionList.add(plotterFunctions.get(a).getName());
+				if(!myLabel.isEmpty())
+					myLabel = myLabel +", "+ a;
+				else 
+					myLabel = myLabel + a;
+			}
+			canvas.setFunctionLabel(myLabel);
 			updateCanvas(plotterFunctions);
 		} else if (evt.getPropertyName() == "clearFunctions") {
 			plotterFunctions = modell.getFunctions();
 			this.functionList.removeAll();
+			canvas.setFunctionLabel("");
 			updateCanvas(plotterFunctions);
 		} else if (evt.getPropertyName() == "removeFunction") {
 			plotterFunctions = modell.getFunctions();
 			this.functionList.removeAll();
+			String myLabel="";
 			for (String a : plotterFunctions.keySet()) {
 				this.functionList.add(plotterFunctions.get(a).getName());
+				if(!myLabel.isEmpty())
+					myLabel = myLabel +", "+ a;
+				else 
+					myLabel = myLabel + a; 
 			}
-
+			canvas.setFunctionLabel(myLabel);
 			updateCanvas(plotterFunctions);
 		}
 

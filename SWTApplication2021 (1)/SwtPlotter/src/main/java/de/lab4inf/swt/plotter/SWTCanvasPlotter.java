@@ -31,10 +31,20 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 	protected double uScal, vScal;
 	protected double initXMax, initXMin;
 
-	private int schrittweite=2; 
+	protected int schrittweite=1; 
 	
 	protected double xMin, xMax, yMin, yMax;
 	protected HashMap<String, PlotterFunction> plotterFunctions = null;
+	
+	protected String functionLabel=""; 
+
+	public String getFunctionLabel() {
+		return functionLabel;
+	}
+
+	public void setFunctionLabel(String functionLabel) {
+		this.functionLabel = functionLabel;
+	}
 
 	/**
 	 * Creates a new instance.
@@ -121,6 +131,7 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 				drawAxis(e);
 				drawUnits(e);
 				drawBeschrift(e);
+				drawLabels(e); 
 				if (plotterFunctions != null)
 					drawFunction(e);
 			}
@@ -317,11 +328,11 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 		font = new Font(e.gc.getDevice(), "Arial", 15, SWT.NONE);
 		e.gc.setFont(font);
 		e.gc.setForeground(e.gc.getDevice().getSystemColor(SWT.COLOR_BLUE));
-
+	}
+	
+	void drawLabels(PaintEvent e) {
 		e.gc.drawString("x", translateU(getMaxU() - getXOrigin() - 30),  translateV(25), true); 
-		
-		e.gc.drawString("f(x)", translateU(10),  translateV(getMaxV() - getYOrigin() - 10), true);
-
+		e.gc.drawString(functionLabel, translateU(5),  translateV(getMaxV() - getYOrigin() - 10), true);
 	}
 
 	void drawUnits(PaintEvent e) {
