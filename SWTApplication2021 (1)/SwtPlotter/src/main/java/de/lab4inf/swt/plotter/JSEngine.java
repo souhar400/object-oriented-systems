@@ -2,6 +2,7 @@ package de.lab4inf.swt.plotter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,6 +20,7 @@ public class JSEngine {
 	private ScriptEngineManager manager;
 	private ScriptEngine javaScriptEngine;
 	private Bindings bindings;
+	private Random rdm = new Random(); 
 
 	/**
 	 * Basic Constructor
@@ -37,7 +39,7 @@ public class JSEngine {
 	 * @return Function<Double,Double>
 	 */
 	@SuppressWarnings("unchecked")
-	public Map.Entry<String, PlotterFunction> parser(String input, HashMap<String, PlotterFunction> functions) {
+	public Map.Entry<String, PlotterFunction> parser(String input, int[] myColor, HashMap<String, PlotterFunction> functions) {
 		Function<Double, Double> emptyDummy = x -> {
 			return 0.0;
 		};
@@ -66,7 +68,9 @@ public class JSEngine {
 			Function<Double, Double> f = (Function<Double, Double>) javaScriptEngine
 					.eval("new java.util.function.Function(func)");
 			bindings.remove("myfunc");
-			PlotterFunction fct = new PlotterFunction(f, input, null, 0);
+			if(myColor == null)
+				myColor=  new int[] { rdm.nextInt(255),  rdm.nextInt(255),  rdm.nextInt(255)}; 
+			PlotterFunction fct = new PlotterFunction(f, input, myColor, 0);
 			fct.setReplacedVal(parts[1]);
 			return Map.entry(parts[0], fct);
 		} catch (Exception e) {

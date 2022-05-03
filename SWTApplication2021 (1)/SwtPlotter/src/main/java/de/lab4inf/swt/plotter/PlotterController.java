@@ -3,6 +3,7 @@ package de.lab4inf.swt.plotter;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Map;
+import java.util.Random;
 import java.util.function.Function;
 
 import org.eclipse.swt.graphics.RGB;
@@ -14,13 +15,16 @@ public class PlotterController implements PropertyChangeListener {
 	PlotterModel modell;
 	PlotterView view;
 	int lineStyle=0; 
-	int[] color = new int[] {0,0,0};
+	int[] color ; 
+	Random rdm ;  
 
 	static JSEngine jsEngine = new JSEngine();
 	
 	public PlotterController(PlotterModel modell, PlotterView view) {
 		this.modell = modell;
 		this.view = view;
+		this.rdm = new Random(); 
+		this.color = null;
 	}
 
 	public void activateView() {
@@ -30,13 +34,18 @@ public class PlotterController implements PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName() == "functionScript") {
+			//myFct.setColor(this.color);
+			
+			
+			
 			String script = evt.getNewValue().toString();
-			Map.Entry<String, PlotterFunction> result= jsEngine.parser(script, modell.getFunctions());
+			Map.Entry<String, PlotterFunction> result= jsEngine.parser(script,  this.color,  modell.getFunctions());
 			
 			PlotterFunction myFct = result.getValue();
-			myFct.setColor(this.color);
 			myFct.setLineStyle(this.lineStyle+1);
 			modell.addFunction(result.getKey(), myFct);
+			
+			this.color=null;
 			}
 		
 		else if(evt.getPropertyName() == "clear") {
