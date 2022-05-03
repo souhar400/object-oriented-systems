@@ -71,7 +71,6 @@ public class JSEngine {
 
 			bindings.put(parts[0], parts[1]);
 			bindings.put("myfunc", "(" + parts[1]+ ")");
-
 			javaScriptEngine.eval("var regex = /(sin)|(cos)|(log)|(tan)|(sqrt)|(exp)/gi;"
 					+ "var myfunc=myfunc.replace(regex, 'Math.$&');"
 					+ "var func = new Function('x' ,'return ' +  myfunc);");
