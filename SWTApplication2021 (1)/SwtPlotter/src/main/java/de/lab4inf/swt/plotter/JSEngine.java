@@ -44,7 +44,8 @@ public class JSEngine {
 			return 0.0;
 		};
 		try {
-			input.trim();
+			input = input.replaceAll("\\s+","");
+			//input.trim();
 			String parts[] = input.split("=");
 			parts[1] = replaceFunctions(parts[1], functions);
 
