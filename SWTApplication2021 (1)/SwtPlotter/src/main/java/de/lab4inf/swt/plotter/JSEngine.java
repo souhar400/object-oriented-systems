@@ -39,7 +39,7 @@ public class JSEngine {
 	 * @return Function<Double,Double>
 	 */
 	@SuppressWarnings("unchecked")
-	public Map.Entry<String, PlotterFunction> parser(String input, int[] myColor, HashMap<String, PlotterFunction> functions) {
+	public Map.Entry<String, PlotterFunction> parser(String input, HashMap<String, PlotterFunction> functions) {
 		Function<Double, Double> emptyDummy = x -> {
 			return 0.0;
 		};
@@ -68,9 +68,8 @@ public class JSEngine {
 			Function<Double, Double> f = (Function<Double, Double>) javaScriptEngine
 					.eval("new java.util.function.Function(func)");
 			bindings.remove("myfunc");
-			if(myColor == null)
-				myColor=  new int[] { rdm.nextInt(255),  rdm.nextInt(255),  rdm.nextInt(255)}; 
-			PlotterFunction fct = new PlotterFunction(f, input, myColor, 0);
+			
+			PlotterFunction fct = new PlotterFunction(f, input, null, 0);
 			fct.setReplacedVal(parts[1]);
 			return Map.entry(parts[0], fct);
 		} catch (Exception e) {

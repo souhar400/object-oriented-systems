@@ -34,14 +34,18 @@ public class PlotterController implements PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName() == "functionScript") {
-			//myFct.setColor(this.color);
-			
 			
 			
 			String script = evt.getNewValue().toString();
-			Map.Entry<String, PlotterFunction> result= jsEngine.parser(script,  this.color,  modell.getFunctions());
+			Map.Entry<String, PlotterFunction> result= jsEngine.parser(script,    modell.getFunctions());
 			
 			PlotterFunction myFct = result.getValue();
+			
+			if(color == null)
+		
+					color=  new int[] { rdm.nextInt(255),  rdm.nextInt(255),  rdm.nextInt(255)}; 
+			
+			myFct.setColor(color);
 			myFct.setLineStyle(this.lineStyle+1);
 			modell.addFunction(result.getKey(), myFct);
 			
