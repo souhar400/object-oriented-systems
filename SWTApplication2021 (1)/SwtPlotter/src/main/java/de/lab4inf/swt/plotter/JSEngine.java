@@ -1,6 +1,9 @@
 package de.lab4inf.swt.plotter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.Function;
@@ -47,27 +50,32 @@ public class JSEngine {
 			input = input.replaceAll("\\s+","");
 			//input.trim();
 			String parts[] = input.split("=");
-			parts[1] = replaceFunctions(parts[1], functions);
+			//parts[1] = replaceFunctions(parts[1], functions);
+			Pattern findInner = Pattern.compile("(?<![a-z])[a-z]\\(x{0,1}y{0,1}\\)");
+			String helper = parts[1];
+			String fctKey;
+			List<String> fctReihenfolge = new ArrayList();
+			while(parts[1].matches("(?<![a-z])[a-z]\\\\(x{0,1}y{0,1}\\\\)")) {
+				Matcher innerFunction = findInner.matcher(helper);
+				if(innerFunction.find()) {
+					fctKey = innerFunction.group();
+					helper = helper.replace(fctKey, "x");
+					fctReihenfolge.add(fctKey);
+				}
+			}
 
 			javaScriptEngine.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
-//			try {
-//				for (String key : bindings.keySet()) {
-//					if (parts[1].contains(key)) {
-//						parts[1] = parts[1].replace(key, (String) bindings.get(key));
-//					}
-//				}
+
 			bindings.put(parts[0], parts[1]);
 			bindings.put("myfunc", "(" + parts[1]+ ")");
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//				return Map.entry("", new PlotterFunction(emptyDummy, "", null, 0));
-//			}
+
 			javaScriptEngine.eval("var regex = /(sin)|(cos)|(log)|(tan)|(sqrt)|(exp)/gi;"
 					+ "var myfunc=myfunc.replace(regex, 'Math.$&');"
 					+ "var func = new Function('x' ,'return ' +  myfunc);");
 
 			Function<Double, Double> f = (Function<Double, Double>) javaScriptEngine
 					.eval("new java.util.function.Function(func)");
+
 			bindings.remove("myfunc");
 			
 			PlotterFunction fct = new PlotterFunction(f, input, null, 0);
@@ -75,22 +83,26 @@ public class JSEngine {
 			return Map.entry(parts[0], fct);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Map.entry("", new PlotterFunction(emptyDummy, "", null, 0));
+			return Map.entry("Dummy", new PlotterFunction(emptyDummy, " ", null, 0));
 		}
 	}
-
+	private String findInner(String function, Map<String, PlotterFunction> fctMap) {
+		return function;
+		
+	}
 	private String replaceFunctions(String function, Map<String, PlotterFunction> fctMap) {
 		String functionRest = function;
 		String fctKey;
 
 		Pattern findInner = Pattern.compile("(?<![a-z])[a-z]\\(x{0,1}y{0,1}\\)");
 		Pattern findOuter = Pattern.compile("(?<![a-z])[a-z]\\([^)]*\\)");
-		Pattern xVal = Pattern.compile("\\(.*\\)");
+		Pattern xVal = Pattern.compile("\\((.*)\\)");
 		while (functionRest.matches("(.*)(?<![a-z])[a-z]\\((.*)\\)(.*)")) {
 			Matcher m = findInner.matcher(functionRest);
 			Matcher outer = findOuter.matcher(functionRest);
 			if (m.find()) {
 				fctKey = m.group();
+
 				functionRest = functionRest.replace(fctKey, fctMap.get(fctKey).getReplacedVal());
 			} else {
 				if (outer.find()) {
@@ -107,4 +119,5 @@ public class JSEngine {
 		}
 		return functionRest;
 	}
+
 }

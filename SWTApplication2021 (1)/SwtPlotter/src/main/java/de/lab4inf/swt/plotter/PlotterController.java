@@ -37,8 +37,11 @@ public class PlotterController implements PropertyChangeListener {
 			
 			
 			String script = evt.getNewValue().toString();
+
 			Map.Entry<String, PlotterFunction> result= jsEngine.parser(script,    modell.getFunctions());
 			
+			if(result.getKey().equals("Dummy"))return;
+
 			PlotterFunction myFct = result.getValue();
 			
 			if(color == null)
