@@ -20,25 +20,28 @@ public class ScriptEngineTest {
 	
 	@Test
 	void functionWithSpaceAnfang() {
-	
-		Map.Entry<String, PlotterFunction> result = jsEngine.parser("     f(x)=x*x", functions); 
-		assertEquals("f(x)=x*x", result.getValue().getName());
+		Map.Entry<String, PlotterFunction> result = jsEngine.parser("     f(x)=sin(x)", functions); 
+		assertEquals(Math.sin(Math.PI/2), result.getValue().getFunction().apply(Math.PI/2));
 	}
 	
 	@Test
-	void sinTest() {
+	void functionWithSpaceEnde() {
+		Map.Entry<String, PlotterFunction> result = jsEngine.parser("f(x)=x*x   ", functions); 
+		assertEquals(4.0, result.getValue().getFunction().apply(2.0));
+	}
+	
+	@Test
+	void withoutMathDotSin() {
 		Map.Entry<String, PlotterFunction> result = jsEngine.parser("f(x)=sin(x)", functions); 
 		assertEquals(Math.sin(Math.PI), result.getValue().getFunction().apply(Math.PI));
 	}
 	
 	@Test
 	void negativeTest() {
-		Map.Entry<String, PlotterFunction> result = jsEngine.parser("f(x)=-x*x*x", functions); 
+		Map.Entry<String, PlotterFunction> result = jsEngine.parser("f(x)= - x*x*x", functions); 
 		assertEquals(-8, result.getValue().getFunction().apply(2.0));
 	}
 	
-	
-	
-	
+
 	
 }
