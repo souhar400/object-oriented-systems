@@ -51,18 +51,21 @@ public class JSEngine {
 			//input.trim();
 			String parts[] = input.split("=");
 			//parts[1] = replaceFunctions(parts[1], functions);
-			Pattern findInner = Pattern.compile("(?<![a-z])[a-z]\\(x{0,1}y{0,1}\\)");
+			Pattern findInner = Pattern.compile("(?<!^)(?<![a-z\\+\\*\\/\\-\\=])[a-z]\\(x{0,1}y{0,1}\\)");
 			String helper = parts[1];
 			String fctKey;
 			List<String> fctReihenfolge = new ArrayList();
-			while(parts[1].matches("(?<![a-z])[a-z]\\\\(x{0,1}y{0,1}\\\\)")) {
-				Matcher innerFunction = findInner.matcher(helper);
-				if(innerFunction.find()) {
+				Matcher innerFunction = findInner.matcher(parts[1]);
+				while(innerFunction.find()) {
 					fctKey = innerFunction.group();
-					helper = helper.replace(fctKey, "x");
+					parts[1] = parts[1].replace(fctKey, "x");
 					fctReihenfolge.add(fctKey);
+					innerFunction = findInner.matcher(parts[1]);
 				}
+			if(parts[1].matches("(.*)[^x](.*)")){
+				parts[1] = replaceFunctions(parts[1], functions);
 			}
+
 
 			javaScriptEngine.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
 
@@ -75,7 +78,12 @@ public class JSEngine {
 
 			Function<Double, Double> f = (Function<Double, Double>) javaScriptEngine
 					.eval("new java.util.function.Function(func)");
-
+			Function<Double, Double> rv = x ->{ return x;};
+			for(String element : fctReihenfolge) {
+				PlotterFunction pf = functions.get(element);
+				rv = rv.andThen(pf.getFunction());
+			}
+			f = rv.andThen(f);
 			bindings.remove("myfunc");
 			
 			PlotterFunction fct = new PlotterFunction(f, input, null, 0);
@@ -86,10 +94,7 @@ public class JSEngine {
 			return Map.entry("Dummy", new PlotterFunction(emptyDummy, " ", null, 0));
 		}
 	}
-	private String findInner(String function, Map<String, PlotterFunction> fctMap) {
-		return function;
-		
-	}
+
 	private String replaceFunctions(String function, Map<String, PlotterFunction> fctMap) {
 		String functionRest = function;
 		String fctKey;
