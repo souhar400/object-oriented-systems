@@ -45,7 +45,6 @@ public class PlotterController implements PropertyChangeListener {
 			PlotterFunction myFct = result.getValue();
 			
 			if(color == null)
-		
 					color=  new int[] { rdm.nextInt(255),  rdm.nextInt(255),  rdm.nextInt(255)}; 
 			
 			myFct.setColor(color);
