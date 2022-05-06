@@ -106,7 +106,7 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		}
 
 	// StatusBar
-	protected Composite createStatusBar(Composite parent) {
+	public Composite createStatusBar(Composite parent) {
 		GridData gd;
 		Group sb = new Group(parent, SWT.NONE);
 		sb.setText("StatusBar");
@@ -126,7 +126,7 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 	}
 
 	// Content Area = PlotCanvas-Group
-	protected Composite createContentArea(Composite parent) {
+	public Composite createContentArea(Composite parent) {
 		GridData gd;
 		Group area = new Group(parent, SWT.NONE);
 		area.setLayout(new GridLayout(4, true));
