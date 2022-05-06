@@ -1,16 +1,9 @@
 package de.lab4inf.swt.plotter;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import javax.script.*;
 
 /**
@@ -24,7 +17,6 @@ public class JSEngine {
 	private ScriptEngineManager manager;
 	private ScriptEngine javaScriptEngine;
 	private Bindings bindings;
-	private Random rdm = new Random(); 
 
 	/**
 	 * Basic Constructor
@@ -45,9 +37,6 @@ public class JSEngine {
 	 */
 	@SuppressWarnings("unchecked")
 	public Map.Entry<String, PlotterFunction> parser(String input, HashMap<String, PlotterFunction> functions) {
-		Function<Double, Double> emptyDummy = x -> {
-			return 0.0;
-		};
 		try {
 			input = input.replaceAll("\\s+","");
 			String functionHeader = ((Character)input.charAt(0)).toString();			
@@ -70,7 +59,7 @@ public class JSEngine {
 			return Map.entry(functionKey, fct);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Map.entry("Dummy", new PlotterFunction(emptyDummy, " ", null, 0));
+			return Map.entry("Dummy", new PlotterFunction(null, null, null, 0));
 		}
 	}
 

@@ -296,7 +296,7 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 		Font font = new Font(e.gc.getDevice(), "Arial", 8, SWT.NONE);
 		e.gc.setFont(font);
 		e.gc.setForeground(e.gc.getDevice().getSystemColor(SWT.COLOR_BLUE));
-
+		font.dispose();
 		double j = 1.0*schrittweite;
 		for (int i = ((int) uScal)*schrittweite; i <= getMaxU() - getXOrigin(); i = i + ((int) uScal)*schrittweite) {
 			String label = String.valueOf(j);
