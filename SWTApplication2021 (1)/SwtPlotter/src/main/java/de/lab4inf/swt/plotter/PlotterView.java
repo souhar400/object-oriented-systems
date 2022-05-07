@@ -40,7 +40,7 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 	String functionScript = "";
 	int[] selections = null;
 	String removedFunction = null;
-
+	private Trafo trafo;
 	private PropertyChangeSupport support;
 
 	HashMap<String, PlotterFunction> plotterFunctions;
@@ -147,7 +147,8 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		SWTCanvasPlotter myCanvas = new SWTCanvasPlotter(area, SWT.None);
 		setCanvas(myCanvas);
 		myCanvas.setLayoutData(gridData);
-
+		
+		
 		Group editMySet = new Group(area, SWT.BORDER);
 		editMySet.setLayout(new GridLayout(1, false));
 		gd = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -346,10 +347,11 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		canvas.addMouseMoveListener(new MouseMoveListener() {
 			@Override
 			public void mouseMove(MouseEvent e) {
+				trafo = new Trafo(canvas);
 				int u = e.x;
 				int v = e.y;
-				double x = canvas.convertUV(u, v)[0];
-				double y = canvas.convertUV(u, v)[1];
+				double x = trafo.convertUV(u, v)[0];
+				double y = trafo.convertUV(u, v)[1];
 				getStatusField().setText(String.format("(u=%04d,v=%03d);(x=%.2f,y=%.2f)", u, v, x, y));
 			}
 		});

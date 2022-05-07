@@ -6,24 +6,33 @@ import javax.inject.Named;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.e4.ui.services.IServiceConstants;
+import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
+
+import org.eclipse.ui.IViewSite;
+
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.part.ViewPart;
 
 import de.lab4inf.swt.plotter.PlotterController;
 import de.lab4inf.swt.plotter.PlotterModel;
 import de.lab4inf.swt.plotter.PlotterView;
-import de.lab4inf.swt.plotter.SWTCanvasPlotter;
+import de.lab4inf.swt.plotter.Trafo;
 
-public class RcpCanvasView{
+public class RcpCanvasView extends ViewPart{
 	private PlotterModel modell; 
 	private PlotterView view ; 
 	private PlotterController controller; 
+	private IStatusLineManager manager;
 
+	
 	@PostConstruct
 	public void createPartControl(Composite parent) {
 		GridData gd; 
@@ -46,17 +55,38 @@ public class RcpCanvasView{
 		Composite sb = view.createStatusBar(parent); 
 		gd= new GridData(SWT.FILL, SWT.NONE, true, false);
         sb.setLayoutData(gd);
-      
-
+                
 		modell.addPropertyChangeListener(view);
 		view.addPropertyChangeListener(controller);
+		addMouseMoveListener();
 	}
 
+	@Override
+	public void init(IViewSite site) throws PartInitException {
+		super.init(site);
+		manager = site.getActionBars().getStatusLineManager();
+		
+	}
+	public void addMouseMoveListener() {
+		view.getCanvas().addMouseMoveListener(new MouseMoveListener() {
+
+			@Override
+			public void mouseMove(MouseEvent e) {
+				Trafo trafo = new Trafo(view.getCanvas());
+				int u = e.x;
+				int v = e.y;
+				double[] xy = trafo.convertUV(u, v);
+				if(manager != null)
+					manager.setMessage(String.format("Koordinaten: x=%.2f,y=%.2f", xy[0], xy[1]));
+			}
+			
+		});
+	}
 	@Focus
 	public void setFocus() {
-		//canvas.setFocus();
-
-	}
+		view.getCanvas().setFocus();
+	}			
+	
 
 	/**
 	 * This method is kept for E3 compatiblity. You can remove it if you do not

@@ -1,6 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>de.lab4inf</groupId>
@@ -50,17 +48,20 @@
 	</repositories>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-surefire-plugin</artifactId>
+			<version>3.0.0-M6</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<version>5.5.2</version>
+			<artifactId>junit-jupiter</artifactId>
+			<version>5.8.2</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- <dependency> <groupId>org.antlr</groupId> <artifactId>antlr4-runtime</artifactId> 
-			<version>4.7</version> </dependency> <dependency> <groupId>WRB4</groupId> 
-			<artifactId>WRB4</artifactId> <version>0.0.1-SNAPSHOT</version> </dependency> -->
-
-		<!-- TODO: Choose the SWT for your plattform -->
+		
 		<dependency>
 			<groupId>org.eclipse.swt</groupId>
 			<artifactId>org.eclipse.swt.gtk.linux.x86_64</artifactId>
@@ -106,25 +107,11 @@
 			<scope>test</scope>
 		</dependency>
 
-
-
-		<!-- <dependency> <groupId>org.eclipse.swt</groupId> <artifactId>org.eclipse.swt.gtk.linux.x86_64</artifactId> 
-			<version>${swt.version}</version> </dependency> <dependency> <groupId>org.eclipse.swt</groupId> 
-			<artifactId>org.eclipse.swt.gtk.linux.x86</artifactId> <version>${swt.version}</version> 
-			</dependency> <dependency> <groupId>org.eclipse.swt</groupId> <artifactId>org.eclipse.swt.win32.win32.x86_64</artifactId> 
-			<version>${swt.version}</version> </dependency> <dependency> <groupId>org.eclipse.swt</groupId> 
-			<artifactId>org.eclipse.swt.cocoa.macosx.x86_64</artifactId> <version>${swt.version}</version> 
-			</dependency> -->
-		<dependency>
-			<groupId>org.junit</groupId>
-			<artifactId>junit5-api</artifactId>
-			<version>5.0.0-ALPHA</version>
-		</dependency>
 		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>jface</artifactId>
 			<version>${jface.version}</version>
 		</dependency>
-		
+
 	</dependencies>
 </project>

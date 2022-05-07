@@ -16,7 +16,7 @@ public class PlotterTest {
 	private final static Display display = Display.getDefault();
 	static Shell mainWindow = new Shell(display, SWT.SHELL_TRIM | SWT.H_SCROLL | SWT.V_SCROLL);
 	SWTCanvasPlotter canvas = new SWTCanvasPlotter(mainWindow, SWT.NONE);
-
+	private Trafo trafo;
 	int xOrigin, yOrigin;
 	double uScal, vScal;
 	int uMin=0, uMax;
@@ -46,7 +46,7 @@ public class PlotterTest {
 		xMax = canvas.xMax;
 		yMin = canvas.yMin; 
 		yMax = canvas.yMax; 
-		
+		trafo = new Trafo(canvas);
 		error = uScal/uMax; 
 	}
 
@@ -58,7 +58,7 @@ public class PlotterTest {
 	//Origin
 	@Test
 	void intOriginTrafo() {
-		int[] uv = canvas.trafo(0.0, 0.0);
+		int[] uv = trafo.trafo(0.0, 0.0);
 		assertEquals(xOrigin, uv[0]);
 		assertEquals(yOrigin, uv[1]);
 	}
@@ -66,7 +66,7 @@ public class PlotterTest {
 	//Punkt 2
 	@Test
 	void doubleTrafo() {
-		double[] uv = canvas.trafo(uMin, vMax - yOrigin);
+		double[] uv = trafo.trafo(uMin, vMax - yOrigin);
 		assertEquals(xMin, uv[0]);
 		assertEquals(0, uv[1]);
 	}
@@ -75,14 +75,14 @@ public class PlotterTest {
 	//Punkt 3
 	@Test
 	void doubleTrafo2() {
-		double[] uv = canvas.trafo(xOrigin, 0);
+		double[] uv = trafo.trafo(xOrigin, 0);
 		assertEquals(0, uv[0]);
 		assertEquals(yMax, uv[1]);
 	}
 	
 	@Test
 	void yObenTrafoTest() {
-		int[] uv = canvas.trafo(0.0, yMax);
+		int[] uv = trafo.trafo(0.0, yMax);
 		assertEquals(xOrigin, uv[0]);
 		assertEquals(0, uv[1]);
 	}
@@ -94,8 +94,8 @@ public class PlotterTest {
 		Random rdm = new Random(); 
 		int myU = rdm.nextInt(500);
 		int myV = rdm.nextInt(500);
-		double[] myResult = canvas.trafo(myU, myV);
-		int[] actualResult = canvas.trafo(myResult[0], myResult[1]);
+		double[] myResult = trafo.trafo(myU, myV);
+		int[] actualResult = trafo.trafo(myResult[0], myResult[1]);
 		assertEquals(myU, actualResult[0]);
 		assertEquals(myV, actualResult[1]);
 	}
@@ -106,8 +106,8 @@ public class PlotterTest {
 		Random rdm = new Random(); 
 		double myX = rdm.nextDouble()*xMax;
 		double myY = rdm.nextDouble()*yMax;
-		int[] myResult = canvas.trafo(myX, myY);
-		double[] actualResult = canvas.trafo(myResult[0], myResult[1]);
+		int[] myResult = trafo.trafo(myX, myY);
+		double[] actualResult = trafo.trafo(myResult[0], myResult[1]);
 		assertEquals(myX, actualResult[0],error);
 		assertEquals(myY, actualResult[1],error);
 	}

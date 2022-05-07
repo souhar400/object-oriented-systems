@@ -19,7 +19,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Path;
 import org.eclipse.swt.widgets.Canvas;
 
-public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements AffineTrafo, ResizeCanvas {
+public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements ResizeCanvas {
 
 	private Color myColor;
 
@@ -37,7 +37,6 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 	protected HashMap<String, PlotterFunction> plotterFunctions = null;
 	
 	protected String functionLabel=""; 
-
 	public String getFunctionLabel() {
 		return functionLabel;
 	}
@@ -55,7 +54,7 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 	public SWTCanvasPlotter(Composite parent, int style) {
 		super(parent, style);
 		this.setBackground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
-
+		
 		// Set the draw Intervall
 		double myxMin = -5;
 		double myxMax = 5;
@@ -175,18 +174,6 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 			e.gc.setLineStyle(fct.getLineStyle()); 
 			e.gc.drawPolyline(polygon);
 		}
-	}
-
-	// von screen to World Coordinates
-	double[] convertUV(int u, int v) {
-		double[] xy = trafo(u, v);
-		return xy;
-	}
-
-	// von world to screen Coordinates
-	int[] convertXY(double x, double y) {
-		int[] uv = trafo(x, y);
-		return uv;
 	}
 
 	// Set the X-Draw-Intervall
@@ -327,6 +314,7 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 		
 		font = new Font(e.gc.getDevice(), "Arial", 15, SWT.NONE);
 		e.gc.setFont(font);
+		font.dispose();
 		e.gc.setForeground(e.gc.getDevice().getSystemColor(SWT.COLOR_BLUE));
 	}
 	
@@ -434,22 +422,6 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 	 */
 	public void dispose() {
 		this.myColor.dispose();
-	}
-
-	@Override
-	public double[] trafo(int u, int v) {
-		double[] xy = new double[2];
-		xy[0] = (u - xOrigin) / uScal;
-		xy[1] = (yOrigin - v) / vScal;
-		return xy;
-	}
-
-	@Override
-	public int[] trafo(double x, double y) {
-		int[] uv = new int[2];
-		uv[0] = (int) ((uScal * x) + xOrigin);
-		uv[1] = (int) (yOrigin - vScal * y);
-		return uv;
 	}
 
 }
