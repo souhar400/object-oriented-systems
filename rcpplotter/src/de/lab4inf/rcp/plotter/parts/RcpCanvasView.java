@@ -9,25 +9,52 @@ import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
+import de.lab4inf.swt.plotter.PlotterController;
 import de.lab4inf.swt.plotter.PlotterModel;
+import de.lab4inf.swt.plotter.PlotterView;
 import de.lab4inf.swt.plotter.SWTCanvasPlotter;
 
 public class RcpCanvasView{
-	private SWTCanvasPlotter canvas;
-	private PlotterModel model;
+	private PlotterModel modell; 
+	private PlotterView view ; 
+	private PlotterController controller; 
 
 	@PostConstruct
 	public void createPartControl(Composite parent) {
-		canvas = new SWTCanvasPlotter(parent, SWT.NONE);
-		model = new PlotterModel();
+		GridData gd; 
+		modell = new PlotterModel(); 
+		view = new PlotterView(modell); 
+		controller = new PlotterController(modell, view);
+
+		//Parent einstellen
+		parent.setLayout(new GridLayout(1, true));
+        gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+        parent.setLayoutData(gd);
+		
+		//Conten Area
+        Composite ca = view.createContentArea(parent);
+        gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+        ca.setLayoutData(gd);
+        
+
+		//Status Bar 
+		Composite sb = view.createStatusBar(parent); 
+		gd= new GridData(SWT.FILL, SWT.NONE, true, false);
+        sb.setLayoutData(gd);
+      
+
+		modell.addPropertyChangeListener(view);
+		view.addPropertyChangeListener(controller);
 	}
 
 	@Focus
 	public void setFocus() {
-		canvas.setFocus();
+		//canvas.setFocus();
 
 	}
 
