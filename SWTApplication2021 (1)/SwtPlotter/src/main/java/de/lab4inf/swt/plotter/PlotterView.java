@@ -10,6 +10,8 @@ import java.util.function.Function;
 import org.eclipse.jface.preference.ColorSelector;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.SelectionEvent;
@@ -19,6 +21,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -33,6 +36,14 @@ import de.lab4inf.swt.SWTApplication;
 
 public class PlotterView extends SWTApplication implements PropertyChangeListener {
 	SWTCanvasPlotter canvas;
+	private Text myText;
+	public Text getMyText() {
+		return myText;
+	}
+
+	public void setMyText(String myText) {
+		this.myText.setText(myText);
+	}
 
 	PlotterModel modell;
 	Label statusField;
@@ -134,7 +145,7 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		gd = new GridData(SWT.FILL, SWT.FILL, true, true);
 		area.setLayoutData(gd);
 
-		// TODO
+		// TODOText myText
 		// area.setBackground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
 
 		GridData gridData = new GridData();
@@ -213,7 +224,7 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
 		addRemoveClean.setLayoutData(gd);
 
-		Text myText = new Text(addRemoveClean, SWT.BORDER);
+		myText = new Text(addRemoveClean, SWT.BORDER);
 		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
 		gd.horizontalSpan = 4;
 		myText.setLayoutData(gd);
@@ -253,7 +264,16 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 				}
 			}
 		});
+		myText.addModifyListener(new ModifyListener() {
 
+			@Override
+			public void modifyText(ModifyEvent e) {
+				if(!myText.getForeground().equals(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK)))
+					myText.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
+				
+			}
+			
+		});
 		updateButton.addListener(SWT.Selection, new Listener() {
 
 			@Override
@@ -262,6 +282,7 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 					if (!myXminText.getText().isBlank() && !myXmaxText.getText().isBlank()) {
 						canvas.setDrawIntervall(Double.valueOf(myXminText.getText()),
 								Double.valueOf(myXmaxText.getText()));
+
 //						myXminText.setText("");
 //						myXmaxText.setText("");
 					}
@@ -314,6 +335,7 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 			public void handleEvent(Event event) {
 				if (event.type == SWT.Selection) {
 					support.firePropertyChange("functionScript", "", myText.getText());
+					
 					// TODO: support.firePropertyChange("styleLine",0 )
 					// TODO: support.firePropertyChange("color",0 )
 

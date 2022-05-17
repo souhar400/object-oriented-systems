@@ -6,7 +6,9 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Function;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 
 
 
@@ -40,7 +42,12 @@ public class PlotterController implements PropertyChangeListener {
 
 			Map.Entry<String, PlotterFunction> result= jsEngine.parser(script,    modell.getFunctions());
 			
-			if(result.getKey().equals("Dummy"))return;
+			if(result.getKey().equals("Dummy")) {
+				view.setMyText("Ungültige Eingabe");
+				view.getMyText().setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+				return;
+				}
+			view.getMyText().setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));				
 
 			PlotterFunction myFct = result.getValue();
 			

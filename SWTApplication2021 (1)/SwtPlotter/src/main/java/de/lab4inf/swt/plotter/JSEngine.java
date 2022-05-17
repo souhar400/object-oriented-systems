@@ -40,6 +40,7 @@ public class JSEngine {
 		try {
 			input = input.replaceAll("\\s+","");
 			String functionHeader = ((Character)input.charAt(0)).toString();			
+			if(!input.contains("=")) throw new IllegalArgumentException("Keine gültige Funktion");
 			String functionBody = input.split("=")[1];
 			String functionKey = input.split("=")[0];
 			String script =
@@ -48,7 +49,8 @@ public class JSEngine {
 			
 			
 			for (Method m : Math.class.getDeclaredMethods()) {
-				functionBody = functionBody.replace(m.getName(), String.format("Math.%s", m.getName()));
+				javaScriptEngine.eval("function " + m.getName() + "(x){ return Math." + m.getName() + "(x);}");
+				//functionBody = functionBody.replace(m.getName(), String.format("Math.%s", m.getName()));
 			}
 			
 			bindings.put(functionHeader, functionBody);
@@ -56,9 +58,10 @@ public class JSEngine {
 					.eval(script);
 
 			PlotterFunction fct = new PlotterFunction(f, input, null, 0);
+			Double test = f.apply(1.0);
 			return Map.entry(functionKey, fct);
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			return Map.entry("Dummy", new PlotterFunction(null, null, null, 0));
 		}
 	}

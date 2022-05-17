@@ -158,7 +158,8 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 			for (int k = -getXOrigin(); k <= getMaxU() - getXOrigin(); k = k + 1) {
 				double zwischenK = k * ((xIntervall[1] - xIntervall[0]) / getMaxU());
 				int yPixel = (int) (scalV * myFct.apply(zwischenK));
-				if (!(yPixel < -getMaxV() || yPixel > getMaxV())) {
+				
+				if (!(yPixel < -getMaxV() || yPixel > getMaxV() || Double.isNaN(myFct.apply(zwischenK)))) {
 					list.add(translateU(zwischenK * scalU));
 					list.add(translateV(scalV * myFct.apply(zwischenK)));
 				}

@@ -51,13 +51,13 @@ public class PlotterTest {
 	}
 
 	@Test
-	void canvasTest() {
+	public void canvasTest() {
 		assertNotNull(canvas);
 	}
 
 	//Origin
 	@Test
-	void intOriginTrafo() {
+	public void testintOriginTrafo() {
 		int[] uv = trafo.trafo(0.0, 0.0);
 		assertEquals(xOrigin, uv[0]);
 		assertEquals(yOrigin, uv[1]);
@@ -65,7 +65,7 @@ public class PlotterTest {
 	
 	//Punkt 2
 	@Test
-	void doubleTrafo() {
+	public void testdoubleTrafo() {
 		double[] uv = trafo.trafo(uMin, vMax - yOrigin);
 		assertEquals(xMin, uv[0]);
 		assertEquals(0, uv[1]);
@@ -74,14 +74,14 @@ public class PlotterTest {
 	
 	//Punkt 3
 	@Test
-	void doubleTrafo2() {
+	public void testdoubleTrafo2() {
 		double[] uv = trafo.trafo(xOrigin, 0);
 		assertEquals(0, uv[0]);
 		assertEquals(yMax, uv[1]);
 	}
 	
 	@Test
-	void yObenTrafoTest() {
+	public void testyObenTrafoTest() {
 		int[] uv = trafo.trafo(0.0, yMax);
 		assertEquals(xOrigin, uv[0]);
 		assertEquals(0, uv[1]);
@@ -90,7 +90,7 @@ public class PlotterTest {
 	
 	//doppelte Trafo
 	@Test
-	void convertUVTest() {
+	public void testconvertUVTest() {
 		Random rdm = new Random(); 
 		int myU = rdm.nextInt(500);
 		int myV = rdm.nextInt(500);
@@ -102,7 +102,7 @@ public class PlotterTest {
 	
 	
 	@Test
-	void convertXYTest() {
+	public void testconvertXYTest() {
 		Random rdm = new Random(); 
 		double myX = rdm.nextDouble()*xMax;
 		double myY = rdm.nextDouble()*yMax;
