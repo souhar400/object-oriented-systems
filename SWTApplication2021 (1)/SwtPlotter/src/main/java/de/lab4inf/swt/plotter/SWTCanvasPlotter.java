@@ -3,6 +3,9 @@ package de.lab4inf.swt.plotter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
+import de.lab4inf.swt.WidthStrategy.ConstantWidthStrategy;
+import de.lab4inf.swt.WidthStrategy.WidthStrategy;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,6 +25,7 @@ import org.eclipse.swt.widgets.Canvas;
 public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements ResizeCanvas {
 
 	private Color myColor;
+	private WidthStrategy strategy = new ConstantWidthStrategy();
 
 	private int xOrigin, yOrigin;
 	private int breite, hoehe;
@@ -147,40 +151,53 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 		this.xZoomSchritt = xZoom;
 		this.yZoomSchritt = yZoom;
 	}
-
 	void drawFunction(PaintEvent e) {
-
-		double[] xIntervall = getIntervall();
-		double[] yIntervall = getyIntervall();
-
-		double scalU = breite / ((xIntervall[1] - xIntervall[0]));
-		double scalV = hoehe / (yIntervall[1] - yIntervall[0]);
-
-		for (PlotterFunction fct : plotterFunctions.values()) {
-			Function<Double, Double> myFct = fct.getFunction(); 
-
-			List<Integer> list = new ArrayList<Integer>();
-			for (int k = -getXOrigin(); k <= getMaxU() - getXOrigin(); k = k + 1) {
-				double zwischenK = k * ((xIntervall[1] - xIntervall[0]) / getMaxU());
-				int yPixel = (int) (scalV * myFct.apply(zwischenK));
-				
-				if (!(yPixel < -getMaxV() || yPixel > getMaxV() || Double.isNaN(myFct.apply(zwischenK)))) {
-					list.add(translateU(zwischenK * scalU));
-					list.add(translateV(scalV * myFct.apply(zwischenK)));
-				}
-			}
-
-			int[] polygon = new int[list.size()];
-			for (int i = 0; i < list.size(); i++)
-				polygon[i] = list.get(i);
-
-			e.gc.setLineWidth(2);
+		for(PlotterFunction fct : plotterFunctions.values()) {
+			Function<Double, Double> toDraw = fct.getFunction();
 			int[] color = fct.getColor();
+			
+			int[] polygon = strategy.calculatePoints(this, toDraw);
+			
+			e.gc.setLineWidth(2);
 			e.gc.setForeground(new Color(null, color[0], color[1], color[2]));  
 			e.gc.setLineStyle(fct.getLineStyle()); 
 			e.gc.drawPolyline(polygon);
 		}
 	}
+
+//	void drawFunction(PaintEvent e) {
+//
+//		double[] xIntervall = getIntervall();
+//		double[] yIntervall = getyIntervall();
+//
+//		double scalU = breite / ((xIntervall[1] - xIntervall[0]));
+//		double scalV = hoehe / (yIntervall[1] - yIntervall[0]);
+//
+//		for (PlotterFunction fct : plotterFunctions.values()) {
+//			Function<Double, Double> myFct = fct.getFunction(); 
+//
+//			List<Integer> list = new ArrayList<Integer>();
+//			for (int k = -getXOrigin(); k <= getMaxU() - getXOrigin(); k = k + 1) {
+//				double zwischenK = k * ((xIntervall[1] - xIntervall[0]) / getMaxU());
+//				int yPixel = (int) (scalV * myFct.apply(zwischenK));
+//				
+//				if (!(yPixel < -getMaxV() || yPixel > getMaxV() || Double.isNaN(myFct.apply(zwischenK)))) {
+//					list.add(translateU(zwischenK * scalU));
+//					list.add(translateV(scalV * myFct.apply(zwischenK)));
+//				}
+//			}
+//
+//			int[] polygon = new int[list.size()];
+//			for (int i = 0; i < list.size(); i++)
+//				polygon[i] = list.get(i);
+//
+//			e.gc.setLineWidth(2);
+//			int[] color = fct.getColor();
+//			e.gc.setForeground(new Color(null, color[0], color[1], color[2]));  
+//			e.gc.setLineStyle(fct.getLineStyle()); 
+//			e.gc.drawPolyline(polygon);
+//		}
+//	}
 
 	// Set the X-Draw-Intervall
 	@Override
@@ -189,7 +206,7 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 		this.xMax = xMax;
 	}
 
-	double[] getIntervall() {
+	public double[] getIntervall() {
 		double[] result = new double[2];
 		result[0] = this.xMin;
 		result[1] = this.xMax;
@@ -216,7 +233,7 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 		this.yMax = yMax;
 	}
 
-	double[] getyIntervall() {
+	public double[] getyIntervall() {
 		double[] yIntervall = new double[2];
 		yIntervall[0] = this.yMin;
 		yIntervall[1] = this.yMax;
@@ -224,7 +241,7 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 	}
 
 	// (u,v) <-> (x,y) Operationen
-	int translateU(double u) {
+	public int translateU(double u) {
 		return (int) (getXOrigin() + u);
 	}
 
@@ -233,7 +250,7 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 	}
 
 	// Translate functions
-	int translateV(double v) {
+	public int translateV(double v) {
 		return (int) (getYOrigin() - v);
 	}
 
@@ -248,11 +265,11 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 		this.yOrigin = yOrigin;
 	}
 
-	protected int getXOrigin() {
+	public int getXOrigin() {
 		return xOrigin;
 	}
 
-	protected int getYOrigin() {
+	public int getYOrigin() {
 		return yOrigin;
 	}
 
@@ -276,11 +293,11 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 		this.hoehe = hoehe;
 	}
 
-	protected int getMaxU() {
+	public int getMaxU() {
 		return this.breite;
 	}
 
-	protected int getMaxV() {
+	public int getMaxV() {
 		return this.hoehe;
 	}
 

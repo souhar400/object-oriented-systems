@@ -41,7 +41,7 @@ public class ModelProvider extends PlotterModel implements ITreeContentProvider 
 	@Override
 	public Object[] getChildren(Object parentElement) {
 		PlotterFunction pf = this.getFunctions().get((String) parentElement);
-		Object[] rv = {pf.getName().split("=")[1], pf.getColor(), pf.getLineStyle()};
+		Object[] rv = {pf.getName(), pf.getColor(), pf.getLineStyle()};
 		return (Object[])rv;
 	}
 
