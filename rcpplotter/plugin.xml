@@ -11,9 +11,25 @@
    </extension>
    <extension point="org.eclipse.ui.views">
         <view
+              category="Canvas category"
               class="de.lab4inf.rcp.plotter.parts.RcpCanvasView"
               id="de.lab4inf.rcp.plotter.parts.RcpCanvasView"
-              name="Canvas View"/>
+              name="Canvas View">
+        </view>
+        <view
+              category="Canvas category"
+              class="de.lab4inf.rcp.plotter.parts.EditorView"
+              id="de.lab4inf.rcp.plotter.parts.EditorView"
+              name="Editor View"
+              restorable="true">
+        </view>
+        <view
+              category="Canvas category"
+              class="de.lab4inf.rcp.plotter.parts.ListView"
+              id="de.lab4inf.rcp.plotter.parts.ListView"
+              name="List View"
+              restorable="true">
+        </view>
 </extension>
 
 </plugin>

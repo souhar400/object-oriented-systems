@@ -36,7 +36,7 @@ public class RcpCanvasView extends ViewPart{
 	@PostConstruct
 	public void createPartControl(Composite parent) {
 		GridData gd; 
-		modell = new PlotterModel(); 
+		modell = ModelProvider.getInstance(); 
 		view = new PlotterView(modell); 
 		controller = new PlotterController(modell, view);
 
