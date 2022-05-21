@@ -31,5 +31,33 @@
               restorable="true">
         </view>
 </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="de.lab4inf.rcp.plotter.PlotterPerspective"
+            id="PlotterPerspective"
+            name="PlotterPerspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="PlotterPerspective">
+         <view
+               id="de.lab4inf.rcp.plotter.parts.ListView"
+               minimized="false"
+               relationship="stack"
+               relative="left"
+               visible="true">
+         </view>
+         <view
+               id="de.lab4inf.rcp.plotter.parts.RcpCanvasView"
+               minimized="false"
+               relationship="stack"
+               relative="top"
+               visible="true">
+         </view>
+      </perspectiveExtension>
+   </extension>
 
 </plugin>
