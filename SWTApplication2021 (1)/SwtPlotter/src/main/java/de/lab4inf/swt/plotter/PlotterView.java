@@ -37,6 +37,7 @@ import de.lab4inf.swt.SWTApplication;
 public class PlotterView extends SWTApplication implements PropertyChangeListener {
 	SWTCanvasPlotter canvas;
 	private Text myText;
+
 	public Text getMyText() {
 		return myText;
 	}
@@ -91,30 +92,29 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		exitItem.addListener(SWT.Selection, (evt) -> setVisible(false));
 		return toolbar;
 	}
-	
-	
-	// StatusBar
-		protected Composite createParamBar(Composite parent) {
-			GridData gd;
-			Group sb = new Group(parent, SWT.HORIZONTAL);
-			sb.setText("Parameters");
-			sb.setLayoutData( new GridData(SWT.FILL, SWT.CENTER, true, false)); 
-			sb.setLayout(new GridLayout(10, false));
 
-			Label statusLabel = new Label(sb, SWT.NONE);
-			statusLabel.setText("Schritteweite der Units : ");
-			Scale steps = new Scale(sb, SWT.BORDER | SWT.HORIZONTAL);
-			steps.setMaximum(10);
-			steps.setMinimum(1);
-			steps.setPageIncrement(1);
-			steps.setSelection(1);
-			
-			steps.addListener(SWT.Selection, (evt) -> {
-				canvas.schrittweite = steps.getSelection(); 
-				updateCanvas(plotterFunctions);
-			});
-			return sb; 
-		}
+	// StatusBar
+	protected Composite createParamBar(Composite parent) {
+		GridData gd;
+		Group sb = new Group(parent, SWT.HORIZONTAL);
+		sb.setText("Parameters");
+		sb.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		sb.setLayout(new GridLayout(10, false));
+
+		Label statusLabel = new Label(sb, SWT.NONE);
+		statusLabel.setText("Schritteweite der Units : ");
+		Scale steps = new Scale(sb, SWT.BORDER | SWT.HORIZONTAL);
+		steps.setMaximum(10);
+		steps.setMinimum(1);
+		steps.setPageIncrement(1);
+		steps.setSelection(1);
+
+		steps.addListener(SWT.Selection, (evt) -> {
+			canvas.schrittweite = steps.getSelection();
+			updateCanvas(plotterFunctions);
+		});
+		return sb;
+	}
 
 	// StatusBar
 	public Composite createStatusBar(Composite parent) {
@@ -213,6 +213,50 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		gd.horizontalSpan = 4;
 		updateButton.setLayoutData(gd);
 		updateButton.setText("Update");
+		
+		
+		updateButton.addListener(SWT.Selection, new Listener() {
+
+			@Override
+			public void handleEvent(Event event) {
+				if (event.type == SWT.Selection) {
+					if (!myXminText.getText().isBlank() && !myXmaxText.getText().isBlank()) {
+						double myXmax = Double.valueOf(myXmaxText.getText());
+						double myXmin = Double.valueOf(myXminText.getText()); 
+						canvas.setDrawIntervall(myXmin,myXmax);
+						canvas.setOrigin((int) (canvas.getMaxU()*(1-(myXmax/(myXmax-myXmin)))),canvas.getYOrigin()); 
+					}
+
+					if (!myYminText.getText().isBlank() && !myYminText.getText().isBlank()) {
+						
+						double myYmax = Double.valueOf(myYmaxText.getText());
+						double myYmin = Double.valueOf(myYminText.getText()); 	
+						canvas.setyIntervall(myYmin, myYmax);
+						canvas.setOrigin(canvas.getXOrigin(),(int) (canvas.getMaxV()*((myYmax/(myYmax-myYmin)))-1)); 
+					}
+					canvas.redraw();
+
+				}
+			}
+		});
+		
+		
+		
+		addListeners();
+		
+		
+		return area;
+
+	}
+	
+	public Composite createEditSet(Composite parent) {
+		GridData gd;
+
+
+		Group editMySet = new Group(parent, SWT.BORDER);
+		editMySet.setLayout(new GridLayout(1, false));
+		gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+		editMySet.setLayoutData(gd);
 
 		List functionsList = new List(editMySet, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL);
 		setFunctionList(functionsList);
@@ -253,7 +297,7 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		removeButton.setLayoutData(gd);
 		removeButton.setText("Remove");
 
-		addListeners();
+		
 
 		clearButton.addListener(SWT.Selection, new Listener() {
 
@@ -274,44 +318,22 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 			}
 			
 		});
-		updateButton.addListener(SWT.Selection, new Listener() {
 
-			@Override
-			public void handleEvent(Event event) {
-				if (event.type == SWT.Selection) {
-					if (!myXminText.getText().isBlank() && !myXmaxText.getText().isBlank()) {
-						canvas.setDrawIntervall(Double.valueOf(myXminText.getText()),
-								Double.valueOf(myXmaxText.getText()));
-
-//						myXminText.setText("");
-//						myXmaxText.setText("");
-					}
-
-					if (!myYminText.getText().isBlank() && !myYminText.getText().isBlank()) {
-						canvas.setyIntervall(Double.valueOf(myYminText.getText()),
-								Double.valueOf(myYmaxText.getText()));
-//						myYminText.setText("");
-//						myYmaxText.setText("");
-					}
-					canvas.redraw();
-
-				}
-			}
-		});
 
 		functionsList.addSelectionListener(new SelectionListener() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				int index = functionsList.getSelectionIndex();
-				if (index == -1)
-					removedFunction = null;
-				else {
-					removedFunction = functionsList.getItem(index);
-				}
 
-			}
+	@Override
+	public void widgetSelected(SelectionEvent e) {
+		int index = functionsList.getSelectionIndex();
+		if (index == -1)
+			removedFunction = null;
+		else {
+			removedFunction = functionsList.getItem(index);
+		}
 
-			@Override
+	}
+
+	@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				int[] selections = functionsList.getSelectionIndices();
 				// String[] outText = new String[functionsList.getSelectionCount()];
@@ -360,8 +382,8 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 				support.firePropertyChange("color", null, cs.getColorValue());
 			}
 		});
-
-		return area;
+		
+		return editMySet; 
 
 	}
 
@@ -395,12 +417,12 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 
 			plotterFunctions = modell.getFunctions();
 			this.functionList.removeAll();
-			String myLabel=""; 
+			String myLabel = "";
 			for (String a : plotterFunctions.keySet()) {
 				this.functionList.add(plotterFunctions.get(a).getName());
-				if(!myLabel.isEmpty())
-					myLabel = myLabel +", "+ a;
-				else 
+				if (!myLabel.isEmpty())
+					myLabel = myLabel + ", " + a;
+				else
 					myLabel = myLabel + a;
 			}
 			canvas.setFunctionLabel(myLabel);
@@ -413,13 +435,13 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		} else if (evt.getPropertyName() == "removeFunction") {
 			plotterFunctions = modell.getFunctions();
 			this.functionList.removeAll();
-			String myLabel="";
+			String myLabel = "";
 			for (String a : plotterFunctions.keySet()) {
 				this.functionList.add(plotterFunctions.get(a).getName());
-				if(!myLabel.isEmpty())
-					myLabel = myLabel +", "+ a;
-				else 
-					myLabel = myLabel + a; 
+				if (!myLabel.isEmpty())
+					myLabel = myLabel + ", " + a;
+				else
+					myLabel = myLabel + a;
 			}
 			canvas.setFunctionLabel(myLabel);
 			updateCanvas(plotterFunctions);

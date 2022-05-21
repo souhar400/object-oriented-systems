@@ -30,6 +30,7 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 	private boolean zoomOn = false;
 	protected double uScal, vScal;
 	protected double initXMax, initXMin;
+	protected boolean gestarted =false;
 
 	protected int schrittweite=1; 
 	
@@ -124,7 +125,11 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 				setScaling(scalU, scalV);
 
 				// set the Origin
-				setOrigin(breite / 2, hoehe / 2);
+				if(!gestarted)
+				{
+					setOrigin(breite / 2, hoehe / 2);
+					gestarted = true; 
+				}
 
 				// draw the Axis
 				drawAxis(e);
