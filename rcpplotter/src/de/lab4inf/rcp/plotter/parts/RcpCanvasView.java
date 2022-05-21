@@ -15,7 +15,8 @@ import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.ui.IViewSite;
 
 import org.eclipse.ui.PartInitException;
@@ -45,12 +46,44 @@ public class RcpCanvasView extends ViewPart{
         gd = new GridData(SWT.FILL, SWT.FILL, true, true);
         parent.setLayoutData(gd);
 		
-		//Conten Area
-        Composite ca = view.createContentArea(parent);
-        gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-        ca.setLayoutData(gd);
         
-
+        
+        
+        //Tabs erstellen 
+        final TabFolder tabFolder = new TabFolder(parent, SWT.NONE);
+        tabFolder.setLayout(new GridLayout(1, true));
+        tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        ////Plotter tab
+        TabItem plotterTab = new TabItem(tabFolder, SWT.NULL); 
+        plotterTab.setText("Plotter");
+        
+        Composite plotterComposite = new Composite(tabFolder, SWT.NONE); 
+        plotterTab.setControl(plotterComposite);
+        plotterComposite.setLayout(new GridLayout(1, true));
+        plotterComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        
+        ////Functions tab
+        
+        TabItem functionTab = new TabItem(tabFolder, SWT.NULL); 
+        functionTab.setText("Functions");
+        
+        Composite functionComposite = new Composite(tabFolder, SWT.NONE); 
+        functionTab.setControl(functionComposite);
+        functionComposite.setLayout(new GridLayout(1, true));
+        functionComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        
+        //Plotter Tab füllen
+        Composite pt = view.createContentArea(plotterComposite);
+        gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+        pt.setLayoutData(gd);
+        
+        //Functions Tab füllen
+        Composite ft = view.createEditSet(functionComposite);
+        gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+        ft.setLayoutData(gd);
+        
+        
+        
 		//Status Bar 
 		Composite sb = view.createStatusBar(parent); 
 		gd= new GridData(SWT.FILL, SWT.NONE, true, false);

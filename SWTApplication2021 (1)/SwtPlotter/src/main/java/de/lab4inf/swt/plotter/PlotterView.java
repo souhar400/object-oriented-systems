@@ -213,6 +213,50 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		gd.horizontalSpan = 4;
 		updateButton.setLayoutData(gd);
 		updateButton.setText("Update");
+		
+		
+		updateButton.addListener(SWT.Selection, new Listener() {
+
+			@Override
+			public void handleEvent(Event event) {
+				if (event.type == SWT.Selection) {
+					if (!myXminText.getText().isBlank() && !myXmaxText.getText().isBlank()) {
+						double myXmax = Double.valueOf(myXmaxText.getText());
+						double myXmin = Double.valueOf(myXminText.getText()); 
+						canvas.setDrawIntervall(myXmin,myXmax);
+						canvas.setOrigin((int) (canvas.getMaxU()*(1-(myXmax/(myXmax-myXmin)))),canvas.getYOrigin()); 
+					}
+
+					if (!myYminText.getText().isBlank() && !myYminText.getText().isBlank()) {
+						
+						double myYmax = Double.valueOf(myYmaxText.getText());
+						double myYmin = Double.valueOf(myYminText.getText()); 	
+						canvas.setyIntervall(myYmin, myYmax);
+						canvas.setOrigin(canvas.getXOrigin(),(int) (canvas.getMaxV()*((myYmax/(myYmax-myYmin)))-1)); 
+					}
+					canvas.redraw();
+
+				}
+			}
+		});
+		
+		
+		
+		addListeners();
+		
+		
+		return area;
+
+	}
+	
+	public Composite createEditSet(Composite parent) {
+		GridData gd;
+
+
+		Group editMySet = new Group(parent, SWT.BORDER);
+		editMySet.setLayout(new GridLayout(1, false));
+		gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+		editMySet.setLayoutData(gd);
 
 		List functionsList = new List(editMySet, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL);
 		setFunctionList(functionsList);
@@ -253,7 +297,7 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		removeButton.setLayoutData(gd);
 		removeButton.setText("Remove");
 
-		addListeners();
+		
 
 		clearButton.addListener(SWT.Selection, new Listener() {
 
@@ -274,30 +318,7 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 			}
 			
 		});
-		updateButton.addListener(SWT.Selection, new Listener() {
 
-			@Override
-			public void handleEvent(Event event) {
-				if (event.type == SWT.Selection) {
-					if (!myXminText.getText().isBlank() && !myXmaxText.getText().isBlank()) {
-						double myXmax = Double.valueOf(myXmaxText.getText());
-						double myXmin = Double.valueOf(myXminText.getText()); 
-						canvas.setDrawIntervall(myXmin,myXmax);
-						canvas.setOrigin((int) (canvas.getMaxU()*(1-(myXmax/(myXmax-myXmin)))),canvas.getYOrigin()); 
-					}
-
-					if (!myYminText.getText().isBlank() && !myYminText.getText().isBlank()) {
-						
-						double myYmax = Double.valueOf(myYmaxText.getText());
-						double myYmin = Double.valueOf(myYminText.getText()); 	
-						canvas.setyIntervall(myYmin, myYmax);
-						canvas.setOrigin(canvas.getXOrigin(),(int) (canvas.getMaxV()*((myYmax/(myYmax-myYmin)))-1)); 
-					}
-					canvas.redraw();
-
-				}
-			}
-		});
 
 		functionsList.addSelectionListener(new SelectionListener() {
 
@@ -361,8 +382,8 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 				support.firePropertyChange("color", null, cs.getColorValue());
 			}
 		});
-
-		return area;
+		
+		return editMySet; 
 
 	}
 
