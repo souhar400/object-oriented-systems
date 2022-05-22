@@ -3,8 +3,9 @@ package de.lab4inf.swt.plotter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
-import de.lab4inf.swt.WidthStrategy.ConstantWidthStrategy;
-import de.lab4inf.swt.WidthStrategy.WidthStrategy;
+import de.lab4inf.swt.WidthStrategy.ConstantStepSizeStrategy;
+import de.lab4inf.swt.WidthStrategy.CurvatureStepSizeStrategy;
+import de.lab4inf.swt.WidthStrategy.StepSizeStrategy;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ import org.eclipse.swt.widgets.Canvas;
 public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements ResizeCanvas {
 
 	private Color myColor;
-	private WidthStrategy strategy = new ConstantWidthStrategy();
+	private StepSizeStrategy strategy = new CurvatureStepSizeStrategy();
 
 	private int xOrigin, yOrigin;
 	private int breite, hoehe;
@@ -153,10 +154,9 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 	}
 	void drawFunction(PaintEvent e) {
 		for(PlotterFunction fct : plotterFunctions.values()) {
-			Function<Double, Double> toDraw = fct.getFunction();
 			int[] color = fct.getColor();
 			
-			int[] polygon = strategy.calculatePoints(this, toDraw);
+			int[] polygon = strategy.calculatePoints(this, fct);
 			
 			e.gc.setLineWidth(2);
 			e.gc.setForeground(new Color(null, color[0], color[1], color[2]));  

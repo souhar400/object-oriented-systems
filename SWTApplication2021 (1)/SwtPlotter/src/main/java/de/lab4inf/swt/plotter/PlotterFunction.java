@@ -42,4 +42,14 @@ public class PlotterFunction {
 	public int getLineStyle() {
 		return lineStyle;
 	}
+    public double derivationOne(double x, double h) {
+        return (function.apply(x + h) - function.apply(x - h)) / (2 * h);
+    }
+    public double derivationTwo(double x, double h) {
+        return (function.apply(x + h) + function.apply(x - h) - 2 * function.apply(x)) / Math.pow(h, 2);
+    }
+    public double curvature(double x, double h) {
+        return derivationTwo(x, h) / (Math.pow(1 + Math.pow(derivationOne(x, h), 2), 3. / 2.));
+    }
+
 }
