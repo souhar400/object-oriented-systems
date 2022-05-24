@@ -240,7 +240,7 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 			}
 		});
 		
-		
+		createEditSet(editMySet); 
 		
 		addListeners();
 		

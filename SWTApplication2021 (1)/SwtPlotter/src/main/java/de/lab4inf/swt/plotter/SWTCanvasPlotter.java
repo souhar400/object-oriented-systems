@@ -5,6 +5,7 @@ import org.eclipse.swt.widgets.Display;
 
 import de.lab4inf.swt.WidthStrategy.ConstantStepSizeStrategy;
 import de.lab4inf.swt.WidthStrategy.CurvatureStepSizeStrategy;
+import de.lab4inf.swt.WidthStrategy.PrunningStepSizeStrategy;
 import de.lab4inf.swt.WidthStrategy.StepSizeStrategy;
 
 import java.text.DecimalFormat;
@@ -26,23 +27,25 @@ import org.eclipse.swt.widgets.Canvas;
 public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements ResizeCanvas {
 
 	private Color myColor;
-	private StepSizeStrategy strategy = new CurvatureStepSizeStrategy();
+	private StepSizeStrategy strategy = new PrunningStepSizeStrategy();
+	
+	private boolean drawPoints = true; 
 
 	private int xOrigin, yOrigin;
 	private int breite, hoehe;
 	double yZoomSchritt, xZoomSchritt;
 
 	private boolean zoomOn = false;
-	protected double uScal, vScal;
-	protected double initXMax, initXMin;
-	protected boolean gestarted =false;
+	public double uScal, vScal;
+	public double initXMax, initXMin;
+	public boolean gestarted =false;
 
-	protected int schrittweite=1; 
+	public int schrittweite=1; 
 	
-	protected double xMin, xMax, yMin, yMax;
-	protected HashMap<String, PlotterFunction> plotterFunctions = null;
+	public double xMin, xMax, yMin, yMax;
+	public HashMap<String, PlotterFunction> plotterFunctions = null;
 	
-	protected String functionLabel=""; 
+	public String functionLabel=""; 
 	public String getFunctionLabel() {
 		return functionLabel;
 	}
@@ -158,9 +161,12 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 			
 			int[] polygon = strategy.calculatePoints(this, fct);
 			
-			e.gc.setLineWidth(2);
+			e.gc.setLineWidth(1);
 			e.gc.setForeground(new Color(null, color[0], color[1], color[2]));  
 			e.gc.setLineStyle(fct.getLineStyle()); 
+			if( drawPoints)
+				for(int i =0; i<polygon.length; i=i+2 )
+					e.gc.drawRectangle(polygon[i]-1, polygon[i+1]-1, 2, 2);
 			e.gc.drawPolyline(polygon);
 		}
 	}
@@ -274,12 +280,12 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 	}
 
 	// getter/setter for scaling factors
-	protected void setScaling(double uScalFactor, double vScalFactor) {
+	public void setScaling(double uScalFactor, double vScalFactor) {
 		this.uScal = uScalFactor;
 		this.vScal = vScalFactor;
 	}
 
-	protected double[] getScaling() {
+	public double[] getScaling() {
 		double[] ret = new double[2];
 		ret[0] = this.uScal;
 		ret[1] = this.vScal;

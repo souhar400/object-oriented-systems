@@ -14,8 +14,8 @@ public class ConstantStepSizeStrategy implements StepSizeStrategy {
 		double[] xIntervall = canvas.getIntervall();
 		double[] yIntervall = canvas.getyIntervall();
 		
-		double breite = canvas.getMaxU();
-		double hoehe = canvas.getMaxV();
+		int breite = canvas.getMaxU();
+		int hoehe = canvas.getMaxV();
 		int xOrigin = canvas.getXOrigin();
 		
 		double scalU = breite / ((xIntervall[1] - xIntervall[0]));

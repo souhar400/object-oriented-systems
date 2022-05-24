@@ -19,18 +19,18 @@ public class PlotterTest {
 	private Trafo trafo;
 	int xOrigin, yOrigin;
 	double uScal, vScal;
-	int uMin=0, uMax;
-	int vMin=0, vMax;
+	int uMin = 0, uMax;
+	int vMin = 0, vMax;
 	double xMin, yMin;
 	double xMax, yMax;
-	double error ;
+	double error;
 
 	@BeforeEach
 	public void setUp() {
 		canvas.setCanvasSize(500, 500);
 		canvas.setSize(500, 500);
 		canvas.setOrigin(250, 250);
-		canvas.setDrawIntervall(-10, 10);
+		canvas.setDrawIntervall(-1, 1);
 		canvas.setyIntervall(-5.0, 5.0);
 
 		uScal = canvas.getSize().x / (canvas.getIntervall()[1] - canvas.getIntervall()[0]);
@@ -44,10 +44,10 @@ public class PlotterTest {
 		vMax = canvas.getMaxV();
 		xMin = canvas.xMin;
 		xMax = canvas.xMax;
-		yMin = canvas.yMin; 
-		yMax = canvas.yMax; 
+		yMin = canvas.yMin;
+		yMax = canvas.yMax;
 		trafo = new Trafo(canvas);
-		error = uScal/uMax; 
+		error = uScal/uMax;
 	}
 
 	@Test
@@ -55,31 +55,30 @@ public class PlotterTest {
 		assertNotNull(canvas);
 	}
 
-	//Origin
+	// Origin
 	@Test
 	public void testintOriginTrafo() {
 		int[] uv = trafo.trafo(0.0, 0.0);
 		assertEquals(xOrigin, uv[0]);
 		assertEquals(yOrigin, uv[1]);
 	}
-	
-	//Punkt 2
+
+	// Punkt 2
 	@Test
 	public void testdoubleTrafo() {
 		double[] uv = trafo.trafo(uMin, vMax - yOrigin);
 		assertEquals(xMin, uv[0]);
 		assertEquals(0, uv[1]);
 	}
-	
-	
-	//Punkt 3
+
+	// Punkt 3
 	@Test
 	public void testdoubleTrafo2() {
 		double[] uv = trafo.trafo(xOrigin, 0);
 		assertEquals(0, uv[0]);
 		assertEquals(yMax, uv[1]);
 	}
-	
+
 	@Test
 	public void testyObenTrafoTest() {
 		int[] uv = trafo.trafo(0.0, yMax);
@@ -87,28 +86,28 @@ public class PlotterTest {
 		assertEquals(0, uv[1]);
 	}
 
-	
-	//doppelte Trafo
+	// doppelte Trafo
 	@Test
 	public void testconvertUVTest() {
-		Random rdm = new Random(); 
+		Random rdm = new Random();
 		int myU = rdm.nextInt(500);
 		int myV = rdm.nextInt(500);
+
 		double[] myResult = trafo.trafo(myU, myV);
 		int[] actualResult = trafo.trafo(myResult[0], myResult[1]);
 		assertEquals(myU, actualResult[0]);
 		assertEquals(myV, actualResult[1]);
 	}
-	
-	
+
 	@Test
 	public void testconvertXYTest() {
-		Random rdm = new Random(); 
-		double myX = rdm.nextDouble()*xMax;
-		double myY = rdm.nextDouble()*yMax;
+		Random rdm = new Random();
+		double myX = rdm.nextDouble() * xMax;
+		double myY = rdm.nextDouble() * yMax;
+
 		int[] myResult = trafo.trafo(myX, myY);
 		double[] actualResult = trafo.trafo(myResult[0], myResult[1]);
-		assertEquals(myX, actualResult[0],error);
-		assertEquals(myY, actualResult[1],error);
+		assertEquals(myX, actualResult[0], error);
+		assertEquals(myY, actualResult[1], error);
 	}
 }
