@@ -37,11 +37,7 @@ public class PlotterModel {
 		HashMap<String, PlotterFunction> oldMap = this.plotterFunctions;
 		HashMap<String, PlotterFunction> newMap = new HashMap<String, PlotterFunction>();
 		newMap = (HashMap<String, PlotterFunction>) oldMap.clone();
-		String parts[] = script.split("=");
-		for(Map.Entry<String, PlotterFunction> entry : newMap.entrySet()) {
-			String key = entry.getKey(); 
-			if(key.contains(parts[0])) newMap.remove(key);
-		}
+
 		newMap.put(script, myFunction);
 		plotterFunctions = newMap;
 		support.firePropertyChange("AddFunction", oldMap, newMap);
