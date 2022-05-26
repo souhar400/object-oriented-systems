@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Canvas;
 public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements ResizeCanvas {
 
 	private Color myColor;
-	private StepSizeStrategy strategy = new PrunningStepSizeStrategy();
+	private StepSizeStrategy strategy = new CurvatureStepSizeStrategy();
 	
 	private boolean drawPoints = true; 
 

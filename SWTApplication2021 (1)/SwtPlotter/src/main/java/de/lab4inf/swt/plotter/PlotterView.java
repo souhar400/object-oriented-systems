@@ -447,15 +447,19 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 			}
 			canvas.setFunctionLabel(myLabel);
 			updateCanvas(plotterFunctions);
-			myViewer.setInput(modell);
-			myViewer.refresh();
+			if(myViewer!=null) {
+				myViewer.setInput(modell);
+				myViewer.refresh();
+			}
 		} else if (evt.getPropertyName() == "clearFunctions") {
 			plotterFunctions = modell.getFunctions();
 			this.functionList.removeAll();
 			canvas.setFunctionLabel("");
 			updateCanvas(plotterFunctions);
-			myViewer.setInput(modell);
-			myViewer.refresh();
+			if(myViewer!=null) {
+				myViewer.setInput(modell);
+				myViewer.refresh();
+			}
 		} else if (evt.getPropertyName() == "removeFunction") {
 			plotterFunctions = modell.getFunctions();
 			this.functionList.removeAll();
@@ -469,8 +473,10 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 			}
 			canvas.setFunctionLabel(myLabel);
 			updateCanvas(plotterFunctions);
-			myViewer.setInput(modell);
-			myViewer.refresh();
+			if(myViewer!=null) {
+				myViewer.setInput(modell);
+				myViewer.refresh();
+			}
 		}
 
 	}
