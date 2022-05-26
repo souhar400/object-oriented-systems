@@ -28,10 +28,10 @@ import de.lab4inf.swt.plotter.PlotterView;
 import de.lab4inf.swt.plotter.Trafo;
 
 public class RcpCanvasView extends ViewPart{
-	private PlotterModel modell; 
-	private PlotterView view ; 
-	private PlotterController controller; 
-	private IStatusLineManager manager;
+	public PlotterModel modell; 
+	public PlotterView view ; 
+	public PlotterController controller; 
+	public IStatusLineManager manager;
 
 	
 	@PostConstruct

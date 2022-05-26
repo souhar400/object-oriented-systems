@@ -9,6 +9,7 @@ import java.util.function.Function;
 
 import org.eclipse.jface.preference.ColorSelector;
 import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -37,6 +38,15 @@ import de.lab4inf.swt.SWTApplication;
 public class PlotterView extends SWTApplication implements PropertyChangeListener {
 	SWTCanvasPlotter canvas;
 	private Text myText;
+	private TreeViewer myViewer; 
+
+	public TreeViewer getMyViewer() {
+		return myViewer;
+	}
+
+	public void setMyViewer(TreeViewer myViewer) {
+		this.myViewer = myViewer;
+	}
 
 	public Text getMyText() {
 		return myText;
@@ -52,6 +62,8 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 	String functionScript = "";
 	int[] selections = null;
 	String removedFunction = null;
+	
+
 	private Trafo trafo;
 	private PropertyChangeSupport support;
 
@@ -81,6 +93,14 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 
 	public SWTCanvasPlotter getCanvas() {
 		return this.canvas;
+	}
+	
+	public String getRemovedFunction() {
+		return removedFunction;
+	}
+
+	public void setRemovedFunction(String removedFunction) {
+		this.removedFunction = removedFunction;
 	}
 
 	// ToolBar
@@ -427,11 +447,15 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 			}
 			canvas.setFunctionLabel(myLabel);
 			updateCanvas(plotterFunctions);
+			myViewer.setInput(modell);
+			myViewer.refresh();
 		} else if (evt.getPropertyName() == "clearFunctions") {
 			plotterFunctions = modell.getFunctions();
 			this.functionList.removeAll();
 			canvas.setFunctionLabel("");
 			updateCanvas(plotterFunctions);
+			myViewer.setInput(modell);
+			myViewer.refresh();
 		} else if (evt.getPropertyName() == "removeFunction") {
 			plotterFunctions = modell.getFunctions();
 			this.functionList.removeAll();
@@ -445,6 +469,8 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 			}
 			canvas.setFunctionLabel(myLabel);
 			updateCanvas(plotterFunctions);
+			myViewer.setInput(modell);
+			myViewer.refresh();
 		}
 
 	}

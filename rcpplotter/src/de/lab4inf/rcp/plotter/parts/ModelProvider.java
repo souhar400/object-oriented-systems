@@ -1,9 +1,5 @@
 package de.lab4inf.rcp.plotter.parts;
 
-
-
-
-
 import java.util.HashMap;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -11,16 +7,12 @@ import org.eclipse.jface.viewers.Viewer;
 import de.lab4inf.swt.plotter.PlotterFunction;
 import de.lab4inf.swt.plotter.PlotterModel;
 
-
-
 public class ModelProvider extends PlotterModel implements ITreeContentProvider {
 	private static ModelProvider instance;
 
-	
 	private ModelProvider() {
 		super();
-		}
-		
+	}
 
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object NewInput) {
@@ -28,33 +20,42 @@ public class ModelProvider extends PlotterModel implements ITreeContentProvider 
 
 	@Override
 	public Object[] getElements(Object inputElement) {
-		return ((HashMap<String,PlotterFunction>)inputElement).keySet().toArray();
+//		return ((HashMap<String,PlotterFunction>)inputElement).keySet().toArray();
+
+		ModelProvider myModel = (ModelProvider) inputElement;
+		return myModel.getFunctions().values().toArray();
 	}
+
 	public static ModelProvider getInstance() {
-		if(instance == null)
+		if (instance == null)
 			instance = new ModelProvider();
-		
+
 		return instance;
-		
+
 	}
 
 	@Override
 	public Object[] getChildren(Object parentElement) {
-		PlotterFunction pf = this.getFunctions().get((String) parentElement);
-		Object[] rv = {pf.getName(), pf.getColor(), pf.getLineStyle()};
-		return (Object[])rv;
+//		PlotterFunction pf = this.getFunctions().get((String) parentElement);
+//		Object[] rv = {pf.getName(), pf.getColor(), pf.getLineStyle()};
+//		return (Object[])rv;
+		PlotterFunction pf = (PlotterFunction) parentElement;
+		Object[] rv = { pf.getName(), pf.getColor(), pf.getLineStyle() };
+		return (Object[]) rv;
 	}
 
 	@Override
 	public Object getParent(Object element) {
-		return (Object)this;
+		return (Object) this;
 	}
 
 	@Override
 	public boolean hasChildren(Object element) {
-	if(element instanceof String && this.getFunctions().get((String)element) != null)	
-		return true;
-	return false;
+		if (element instanceof PlotterFunction) {
+			PlotterFunction pf = (PlotterFunction) element;
+			if (this.getFunctions().containsValue(pf))
+				return true;
+		}
+		return false;
 	}
-
 }

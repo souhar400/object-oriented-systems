@@ -10,6 +10,8 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 
+import de.lab4inf.swt.plotter.PlotterFunction;
+
 public class PlotterFunctionLabelProvider extends LabelProvider {
 
 
@@ -20,6 +22,8 @@ public class PlotterFunctionLabelProvider extends LabelProvider {
 			Color c = new Color(color[0], color[1], color[2]);
 			return c.toString();
 		}
+		else if (element instanceof PlotterFunction)
+			return ((PlotterFunction) element).getName().split("=")[0]; 
 		
 		return element.toString();
 	}
