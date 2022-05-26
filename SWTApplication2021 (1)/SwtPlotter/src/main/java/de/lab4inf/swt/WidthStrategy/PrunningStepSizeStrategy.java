@@ -17,10 +17,9 @@ public class PrunningStepSizeStrategy implements StepSizeStrategy {
 		double width = canvas.getMaxU();
 		double size = maxX - minX;
 		double step = (size / width);
-
 		double hoehe = canvas.getMaxV();
-
 		double error = 1 / width;
+		
 		TreeMap<Double, Double> xy = new TreeMap<Double, Double>();
 		Function<Double, Double> func = fct.getFunction();
 		Trafo transformer = new Trafo(canvas);
@@ -55,10 +54,8 @@ public class PrunningStepSizeStrategy implements StepSizeStrategy {
 						}
 					}
 
-					if (!(Double.isNaN(yMin) || (int)(canvas.getYOrigin() - yMin) > hoehe
-							|| (int)(canvas.getYOrigin() - yMin) < -hoehe || Double.isNaN(yMax)
-							|| (int)(canvas.getYOrigin() - yMax) > hoehe ||(int) (canvas.getYOrigin() - yMax) < -hoehe)) {
-
+					if (!(Double.isNaN(yMin) || (int)(canvas.getYOrigin() - yMin) > hoehe || (int)(canvas.getYOrigin() - yMin) < -hoehe
+							|| Double.isNaN(yMax) || (int)(canvas.getYOrigin() - yMax) > hoehe ||(int) (canvas.getYOrigin() - yMax) < -hoehe)) {
 						if (xMax != xMin) {
 							xy.put(xMax, yMax);
 							xy.put(xMin, yMin);
@@ -72,8 +69,7 @@ public class PrunningStepSizeStrategy implements StepSizeStrategy {
 			}
 		}
 		prevY = func.apply(maxX);
-		if (!(Double.isNaN(prevY) || (int)(canvas.getYOrigin() - prevY) > hoehe
-				|| (int)(canvas.getYOrigin() - prevY) < -hoehe))
+		if (!(Double.isNaN(prevY) || (int)(canvas.getYOrigin() - prevY) > hoehe || (int)(canvas.getYOrigin() - prevY) < -hoehe))
 			xy.put(maxX, prevY);
 		int[] xyArray = new int[xy.size() * 2];
 		int i = 0;

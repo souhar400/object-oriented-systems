@@ -43,8 +43,7 @@ public class CurvatureStepSizeStrategy implements StepSizeStrategy {
 		double slope = fct.curvature(current, h);
 		double myY = toCalc.apply(current); 
 		int[] point ; 
-		if (!(Double.isNaN(myY) || (int) (canvas.getYOrigin() - myY) > hoehe
-				|| (int) (canvas.getYOrigin() - myY) < -hoehe))
+		if (!(Double.isNaN(myY) || (int) (canvas.getYOrigin() - myY) > hoehe || (int) (canvas.getYOrigin() - myY) < -hoehe))
 		{
 			point= transformer.convertXY(current, toCalc.apply(current));
 			Collections.addAll(pointslist, point[0], point[1]);
@@ -56,8 +55,7 @@ public class CurvatureStepSizeStrategy implements StepSizeStrategy {
 			current += step;
 			step = min_step;
 			myY = toCalc.apply(current); 
-			if (!(Double.isNaN(myY) || (int) (canvas.getYOrigin() - myY) > hoehe
-					|| (int) (canvas.getYOrigin() - myY) < -hoehe))
+			if (!(Double.isNaN(myY) || (int) (canvas.getYOrigin() - myY) > hoehe || (int) (canvas.getYOrigin() - myY) < -hoehe))
 			{
 				point= transformer.convertXY(current, toCalc.apply(current));
 				Collections.addAll(pointslist, point[0], point[1]);
