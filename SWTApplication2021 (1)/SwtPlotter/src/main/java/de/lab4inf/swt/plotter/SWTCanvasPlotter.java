@@ -8,7 +8,7 @@ import de.lab4inf.swt.WidthStrategy.CurvatureStepSizeStrategy;
 import de.lab4inf.swt.WidthStrategy.ErrorStepSizeStrategy;
 import de.lab4inf.swt.WidthStrategy.PrunningStepSizeStrategy;
 import de.lab4inf.swt.WidthStrategy.StepSizeStrategy;
-import de.lab4inf.swt.WidthStrategy.myDivideConquer;
+import de.lab4inf.swt.WidthStrategy.DivideAndConquerStepSizeStrategy;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

@@ -1,5 +1,8 @@
 package de.lab4inf.swt.WidthStrategy;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Function;
@@ -18,30 +21,39 @@ public class ErrorStepSizeStrategy implements StepSizeStrategy {
 		double maxX = canvas.getIntervall()[1];
 		double minX = canvas.getIntervall()[0];
 		double width = canvas.getMaxU();
+		List<Integer> pointslist = new ArrayList<>();
+		double hoehe = canvas.getMaxV();
+
 		Trafo transformer = new Trafo(canvas);
 		Function<Double, Double> toCalc = fct.getFunction();
-		//error = ((maxX-minX) / (double) width);
+		// error = ((maxX-minX) / (double) width);
 		error = 1 / ((double) width);
 
 		xy = new TreeMap<Double, Double>();
 		xy.put(minX, toCalc.apply(minX));
+
 		xy.put(maxX, toCalc.apply(maxX));
-		
+
 		double mid = (minX + maxX) / 2;
 		xy.put(mid, toCalc.apply(mid));
 		addPoint(toCalc, minX, mid, false);
 		addPoint(toCalc, mid, maxX, false);
-
+		double myY;
 		int[] xyArray = new int[xy.size() * 2];
-		int i = 0;
-		int[] point;
+		int[] point=null;
+
 		for (Map.Entry<Double, Double> entry : xy.entrySet()) {
-			point = transformer.convertXY(entry.getKey(), entry.getValue());
-			xyArray[i] = point[0];
-			xyArray[i + 1] = point[1];
-			i += 2;
+			myY = entry.getValue();
+			if (!(Double.isNaN(myY) || (int) (canvas.getYOrigin() - myY) > hoehe
+					|| (int) (canvas.getYOrigin() - myY) < -hoehe)) {
+				point = transformer.convertXY(entry.getKey(), entry.getValue());
+				Collections.addAll(pointslist, point[0], point[1]);
+			}
 		}
-		return xyArray;
+		int[] polygon = new int[pointslist.size()];
+		for (int i = 0; i < pointslist.size(); i++)
+			polygon[i] = pointslist.get(i);
+		return polygon;
 	}
 
 	private void addPoint(Function<Double, Double> toCalc, double left, double right, boolean last) {

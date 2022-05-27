@@ -18,7 +18,7 @@ import de.lab4inf.swt.plotter.PlotterFunction;
 import de.lab4inf.swt.plotter.SWTCanvasPlotter;
 import de.lab4inf.swt.plotter.Trafo;
 
-public class myDivideConquer implements StepSizeStrategy {
+public class DivideAndConquerStepSizeStrategy implements StepSizeStrategy {
 	private static final double MIN_STEP_PX =1;
 	private static final int MAX_STEP_PX = 25;
 	protected static final int MAX_ITERATIONS = 25; //25
