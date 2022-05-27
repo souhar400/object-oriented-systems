@@ -5,8 +5,10 @@ import org.eclipse.swt.widgets.Display;
 
 import de.lab4inf.swt.WidthStrategy.ConstantStepSizeStrategy;
 import de.lab4inf.swt.WidthStrategy.CurvatureStepSizeStrategy;
+import de.lab4inf.swt.WidthStrategy.ErrorStepSizeStrategy;
 import de.lab4inf.swt.WidthStrategy.PrunningStepSizeStrategy;
 import de.lab4inf.swt.WidthStrategy.StepSizeStrategy;
+import de.lab4inf.swt.WidthStrategy.myDivideConquer;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -27,7 +29,7 @@ import org.eclipse.swt.widgets.Canvas;
 public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements ResizeCanvas {
 
 	private Color myColor;
-	private StepSizeStrategy strategy = new CurvatureStepSizeStrategy();
+	private StepSizeStrategy strategy = new ErrorStepSizeStrategy();
 	
 	private boolean drawPoints = true; 
 
