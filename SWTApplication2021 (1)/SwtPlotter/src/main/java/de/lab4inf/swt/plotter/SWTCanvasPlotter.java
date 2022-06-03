@@ -5,13 +5,14 @@ import org.eclipse.swt.widgets.Display;
 
 import de.lab4inf.swt.WidthStrategy.ConstantStepSizeStrategy;
 import de.lab4inf.swt.WidthStrategy.CurvatureStepSizeStrategy;
+import de.lab4inf.swt.WidthStrategy.DivideAndConquerStepSizeStrategy;
 import de.lab4inf.swt.WidthStrategy.ErrorStepSizeStrategy;
 import de.lab4inf.swt.WidthStrategy.PrunningStepSizeStrategy;
 import de.lab4inf.swt.WidthStrategy.StepSizeStrategy;
-import de.lab4inf.swt.WidthStrategy.DivideAndConquerStepSizeStrategy;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
@@ -30,8 +31,8 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 
 	private Color myColor;
 	private StepSizeStrategy strategy = new ErrorStepSizeStrategy();
-	
-	private boolean drawPoints = true; 
+	Trafo transformer;
+	private boolean drawPoints = true;
 
 	private int xOrigin, yOrigin;
 	private int breite, hoehe;
@@ -40,14 +41,15 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 	private boolean zoomOn = false;
 	public double uScal, vScal;
 	public double initXMax, initXMin;
-	public boolean gestarted =false;
+	public boolean gestarted = false;
 
-	public int schrittweite=1; 
-	
+	public int schrittweite = 1;
+
 	public double xMin, xMax, yMin, yMax;
 	public HashMap<String, PlotterFunction> plotterFunctions = null;
-	
-	public String functionLabel=""; 
+
+	public String functionLabel = "";
+
 	public String getFunctionLabel() {
 		return functionLabel;
 	}
@@ -65,13 +67,12 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 	public SWTCanvasPlotter(Composite parent, int style) {
 		super(parent, style);
 		this.setBackground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
-		
+
 		// Set the draw Intervall
 		double myxMin = -5;
 		double myxMax = 5;
 		double myyMin = -3;
 		double myyMax = 3;
-
 		setInitIntervall(myxMin, myxMax);
 		setDrawIntervall(myxMin, myxMax);
 		setyIntervall(myyMin, myyMax);
@@ -135,17 +136,16 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 				setScaling(scalU, scalV);
 
 				// set the Origin
-				if(!gestarted)
-				{
+				if (!gestarted) {
 					setOrigin(breite / 2, hoehe / 2);
-					gestarted = true; 
+					gestarted = true;
 				}
 
 				// draw the Axis
 				drawAxis(e);
 				drawUnits(e);
 				drawBeschrift(e);
-				drawLabels(e); 
+				drawLabels(e);
 				if (plotterFunctions != null)
 					drawFunction(e);
 			}
@@ -157,55 +157,42 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 		this.xZoomSchritt = xZoom;
 		this.yZoomSchritt = yZoom;
 	}
+
 	void drawFunction(PaintEvent e) {
-		for(PlotterFunction fct : plotterFunctions.values()) {
+		transformer = new Trafo(this); 
+		for (PlotterFunction fct : plotterFunctions.values()) {
 			int[] color = fct.getColor();
-			
-			int[] polygon = strategy.calculatePoints(this, fct);
-			
+			double[] points = strategy.calculatePoints(fct, xMin, xMax, yMin, yMax, breite, hoehe);
+			int[] polygon = convertArray(points);
 			e.gc.setLineWidth(1);
-			e.gc.setForeground(new Color(null, color[0], color[1], color[2]));  
-			e.gc.setLineStyle(fct.getLineStyle()); 
-			if( drawPoints)
-				for(int i =0; i<polygon.length; i=i+2 )
-					e.gc.drawRectangle(polygon[i]-1, polygon[i+1]-1, 2, 2);
+			e.gc.setForeground(new Color(null, color[0], color[1], color[2]));
+			e.gc.setLineStyle(fct.getLineStyle());
+			if (drawPoints)
+				for (int i = 0; i < polygon.length; i = i + 2)
+					e.gc.drawRectangle(polygon[i] - 1, polygon[i + 1] - 1, 2, 2);
 			e.gc.drawPolyline(polygon);
 		}
 	}
 
-//	void drawFunction(PaintEvent e) {
-//
-//		double[] xIntervall = getIntervall();
-//		double[] yIntervall = getyIntervall();
-//
-//		double scalU = breite / ((xIntervall[1] - xIntervall[0]));
-//		double scalV = hoehe / (yIntervall[1] - yIntervall[0]);
-//
-//		for (PlotterFunction fct : plotterFunctions.values()) {
-//			Function<Double, Double> myFct = fct.getFunction(); 
-//
-//			List<Integer> list = new ArrayList<Integer>();
-//			for (int k = -getXOrigin(); k <= getMaxU() - getXOrigin(); k = k + 1) {
-//				double zwischenK = k * ((xIntervall[1] - xIntervall[0]) / getMaxU());
-//				int yPixel = (int) (scalV * myFct.apply(zwischenK));
-//				
-//				if (!(yPixel < -getMaxV() || yPixel > getMaxV() || Double.isNaN(myFct.apply(zwischenK)))) {
-//					list.add(translateU(zwischenK * scalU));
-//					list.add(translateV(scalV * myFct.apply(zwischenK)));
-//				}
-//			}
-//
-//			int[] polygon = new int[list.size()];
-//			for (int i = 0; i < list.size(); i++)
-//				polygon[i] = list.get(i);
-//
-//			e.gc.setLineWidth(2);
-//			int[] color = fct.getColor();
-//			e.gc.setForeground(new Color(null, color[0], color[1], color[2]));  
-//			e.gc.setLineStyle(fct.getLineStyle()); 
-//			e.gc.drawPolyline(polygon);
-//		}
-//	}
+	private int[] convertArray(double[] polygon) {
+
+		List<Integer> pointslist = new ArrayList<>();
+
+		int[] point;
+		for (int j = 0; j <= polygon.length - 2; j = j + 2) {
+			double myY = polygon[j + 1];
+
+			if (!(Double.isNaN(myY) || (int) (getYOrigin() - myY) > hoehe || (int) (getYOrigin() - myY) < -hoehe)) {
+				point = transformer.convertXY(polygon[j], polygon[j + 1]);
+				Collections.addAll(pointslist, point[0], point[1]);
+			}
+		}
+
+		int[] result = new int[pointslist.size()];
+		for (int i = 0; i < pointslist.size(); i++)
+			result[i] = pointslist.get(i);
+		return result;
+	}
 
 	// Set the X-Draw-Intervall
 	@Override
@@ -315,61 +302,63 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 		e.gc.setFont(font);
 		e.gc.setForeground(e.gc.getDevice().getSystemColor(SWT.COLOR_BLUE));
 		font.dispose();
-		double j = 1.0*schrittweite;
-		for (int i = ((int) uScal)*schrittweite; i <= getMaxU() - getXOrigin(); i = i + ((int) uScal)*schrittweite) {
+		double j = 1.0 * schrittweite;
+		for (int i = ((int) uScal) * schrittweite; i <= getMaxU() - getXOrigin(); i = i
+				+ ((int) uScal) * schrittweite) {
 			String label = String.valueOf(j);
 			e.gc.drawString(label, translateU(i - 6), translateV(-7), true);
 			j = j + schrittweite;
 		}
-		
-		j = -1.0*schrittweite;		
-		for (int i = -((int)uScal)*schrittweite; i >= -getXOrigin(); i = i - ((int) uScal)*schrittweite) {
+
+		j = -1.0 * schrittweite;
+		for (int i = -((int) uScal) * schrittweite; i >= -getXOrigin(); i = i - ((int) uScal) * schrittweite) {
 			String label = String.valueOf(j);
 			e.gc.drawString(label, translateU(i - 10), translateV(-7), true);
 			j = j - schrittweite;
 		}
-		
-		j=1.0*schrittweite; 
-		for (int i = ((int)vScal)*schrittweite; i <= getYOrigin(); i = i + ((int) vScal)*schrittweite) {
+
+		j = 1.0 * schrittweite;
+		for (int i = ((int) vScal) * schrittweite; i <= getYOrigin(); i = i + ((int) vScal) * schrittweite) {
 			String label = String.valueOf(j);
-			e.gc.drawString(label, translateU(- 20), translateV(i+5), true);
+			e.gc.drawString(label, translateU(-20), translateV(i + 5), true);
 			j = j + schrittweite;
 		}
-		
-		j=-1.0*schrittweite;
-		for (int i = ((int)-vScal)*schrittweite; i >= -(getMaxV() - getYOrigin()); i = i - ((int) vScal)*schrittweite){
+
+		j = -1.0 * schrittweite;
+		for (int i = ((int) -vScal) * schrittweite; i >= -(getMaxV() - getYOrigin()); i = i
+				- ((int) vScal) * schrittweite) {
 			String label = String.valueOf(j);
-			e.gc.drawString(label, translateU(- 25), translateV(i+5), true);
+			e.gc.drawString(label, translateU(-25), translateV(i + 5), true);
 			j = j - schrittweite;
 		}
-		
+
 		font = new Font(e.gc.getDevice(), "Arial", 15, SWT.NONE);
 		e.gc.setFont(font);
 		font.dispose();
 		e.gc.setForeground(e.gc.getDevice().getSystemColor(SWT.COLOR_BLUE));
 	}
-	
+
 	void drawLabels(PaintEvent e) {
-		e.gc.drawString("x", translateU(getMaxU() - getXOrigin() - 30),  translateV(25), true); 
-		e.gc.drawString(functionLabel, translateU(5),  translateV(getMaxV() - getYOrigin() - 10), true);
+		e.gc.drawString("x", translateU(getMaxU() - getXOrigin() - 30), translateV(25), true);
+		e.gc.drawString(functionLabel, translateU(5), translateV(getMaxV() - getYOrigin() - 10), true);
 	}
 
 	void drawUnits(PaintEvent e) {
 
-		for (int i = 0; i <= getMaxU() - getXOrigin(); i = i + ((int) uScal)*schrittweite) {
+		for (int i = 0; i <= getMaxU() - getXOrigin(); i = i + ((int) uScal) * schrittweite) {
 			e.gc.drawLine(translateU(i), translateV(-3), translateU(i), translateV(3));
 		}
 
-		for (int i = 0; i >= -getXOrigin(); i = i - ((int) uScal)*schrittweite) {
+		for (int i = 0; i >= -getXOrigin(); i = i - ((int) uScal) * schrittweite) {
 			e.gc.drawLine(translateU(i), translateV(-3), translateU(i), translateV(3));
 
 		}
 
-		for (int i = 0; i <= getYOrigin(); i = i + ((int) vScal)*schrittweite) {
+		for (int i = 0; i <= getYOrigin(); i = i + ((int) vScal) * schrittweite) {
 			e.gc.drawLine(translateU(-3), translateV(i), translateU(3), translateV(i));
 		}
 
-		for (int i = 0; i >= -(getMaxV() - getYOrigin()); i = i - ((int) vScal)*schrittweite) {
+		for (int i = 0; i >= -(getMaxV() - getYOrigin()); i = i - ((int) vScal) * schrittweite) {
 			e.gc.drawLine(translateU(-3), translateV(i), translateU(3), translateV(i));
 		}
 	}
@@ -441,7 +430,7 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 	}
 
 	public void setFcts(HashMap<String, PlotterFunction> fctSet) {
-		this.plotterFunctions= fctSet;
+		this.plotterFunctions = fctSet;
 	}
 
 	public HashMap<String, PlotterFunction> getFcts() {

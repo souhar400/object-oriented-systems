@@ -19,56 +19,53 @@ import de.lab4inf.swt.plotter.SWTCanvasPlotter;
 import de.lab4inf.swt.plotter.Trafo;
 
 public class DivideAndConquerStepSizeStrategy implements StepSizeStrategy {
-	private static final double MIN_STEP_PX =1;
+	private static final double MIN_STEP_PX = 1;
 	private static final int MAX_STEP_PX = 25;
-	protected static final int MAX_ITERATIONS = 25; //25
-	protected static final double DIVIDING_FACTOR = 0.5;  //1.1
+	protected static final int MAX_ITERATIONS = 25; // 25
+	protected static final double DIVIDING_FACTOR = 0.5; // 1.1
 
 	@Override
-	public int[] calculatePoints(SWTCanvasPlotter canvas, PlotterFunction fct) {
-		int sizeScreen = canvas.getMaxU();
-		double sizeWorld = canvas.getIntervall()[1]-canvas.getIntervall()[0];
-		Trafo transformer = new Trafo(canvas);
-		double delta = ((canvas.getyIntervall()[1]-canvas.getyIntervall()[0])/(canvas.getMaxV())) ; 
-		double hoehe = canvas.getMaxV();
+	public double[] calculatePoints(PlotterFunction fct, double xMin, double xMax, double yMin, double yMax, int width,
+			int hoehe) {
+//		int sizeScreen = canvas.getMaxU();
+//		double sizeWorld = canvas.getIntervall()[1]-canvas.getIntervall()[0];
+//		Trafo transformer = new Trafo(canvas);
+		double delta = ((xMax - xMin) / (hoehe));
+//		double hoehe = canvas.getMaxV();
 
-		
-		double max_step = sizeWorld / sizeScreen * MAX_STEP_PX ;
-		double min_step = sizeWorld / sizeScreen * MIN_STEP_PX;
-		System.out.println("max_Step : "+ max_step);
-		System.out.println("min_step : "+ min_step);
+		double min_step = xMax / width * MIN_STEP_PX;
+		double max_step = xMax / width * MAX_STEP_PX;
+		System.out.println("max_Step : " + max_step);
+		System.out.println("min_step : " + min_step);
 
 		Function<Double, Double> toCalc = fct.getFunction();
-		List<Integer> pointslist = new ArrayList<>();
-		double current = canvas.getIntervall()[0];
-		
-		int[] point ; 
-		double myY = toCalc.apply(current); 
-		if (!(Double.isNaN(myY) || (int) (canvas.getYOrigin() - myY) > hoehe || (int) (canvas.getYOrigin() - myY) < -hoehe))
-		{
-			point= transformer.convertXY(current, toCalc.apply(current));
-			Collections.addAll(pointslist, point[0], point[1]);
-		}
-		double nextStep = max_step;  
-		while(current < canvas.getIntervall()[1]) {	
-			nextStep = calculateByDivideAndConquer(toCalc, current, nextStep, min_step, delta);  
-			current = current + nextStep; 
-			
+		List<Double> pointslist = new ArrayList<>();
+		double current = xMin;
+
+		int[] point;
+		double myY = toCalc.apply(current);
+
+		pointslist.add(current);
+		pointslist.add(toCalc.apply(current));
+		double nextStep = max_step;
+		while (current < xMax) {
+			nextStep = calculateByDivideAndConquer(toCalc, current, nextStep, min_step, delta);
+			current = current + nextStep;
+
 			myY = toCalc.apply(current); 
-			if (!(Double.isNaN(myY) || (int) (canvas.getYOrigin() - myY) > hoehe || (int) (canvas.getYOrigin() - myY) < -hoehe))
-			{
-				point= transformer.convertXY(current, toCalc.apply(current));
-				Collections.addAll(pointslist, point[0], point[1]);
-			}
-			nextStep=max_step; 
+			
+			pointslist.add(current); 
+			pointslist.add(toCalc.apply(current)); 
+			nextStep = max_step;
 		}
-		int[] polygon = new int[pointslist.size()];
+		double[] polygon = new double[pointslist.size()];
 		for (int i = 0; i < pointslist.size(); i++)
 			polygon[i] = pointslist.get(i);
 		return polygon;
 	}
 
-	protected double calculateByDivideAndConquer(Function<Double, Double> function, double x, double lastStep, double min_step, double DELTA) {
+	protected double calculateByDivideAndConquer(Function<Double, Double> function, double x, double lastStep,
+			double min_step, double DELTA) {
 		double nextStep = lastStep;
 		double error;
 		for (int i = 0; i < MAX_ITERATIONS; i++) {
@@ -83,7 +80,7 @@ public class DivideAndConquerStepSizeStrategy implements StepSizeStrategy {
 		}
 		return nextStep;
 	}
-	
+
 	protected double calculateError(Function<Double, Double> function, double x, double nextStep) {
 		double y_minus_step = function.apply(x - nextStep);
 		double y = function.apply(x);

@@ -15,42 +15,35 @@ public class PrunningStepSizeStrategy implements StepSizeStrategy {
 	protected static final double PRUNING_FACTOR = 2.0;  //1.1
 
 	@Override
-	public int[] calculatePoints(SWTCanvasPlotter canvas, PlotterFunction fct) {
-		int sizeScreen = canvas.getMaxU();
-		double sizeWorld = canvas.getIntervall()[1]-canvas.getIntervall()[0];
-		Trafo transformer = new Trafo(canvas);
-		double delta = (canvas.getyIntervall()[1]-canvas.getyIntervall()[0])/(canvas.getMaxV()); 
-		double hoehe = canvas.getMaxV();
+	public double[] calculatePoints(PlotterFunction fct, double xMin, double xMax, double yMin, double yMax, int width, int hoehe) {
+		double sizeWorld = xMax-xMin;
+		double delta = (xMax - xMin)/(hoehe); 
 
 		
-		double max_step = sizeWorld / sizeScreen * MAX_STEP_PX ;
-		double min_step = sizeWorld / sizeScreen * MIN_STEP_PX;
+		double max_step = sizeWorld / width * MAX_STEP_PX ;
+		double min_step = sizeWorld / width* MIN_STEP_PX;
 
 		Function<Double, Double> toCalc = fct.getFunction();
-		List<Integer> pointslist = new ArrayList<>();
-		double current = canvas.getIntervall()[0];
+		List<Double> pointslist = new ArrayList<>();
+		double current = xMin;
 		
 		int[] point ; 
 		double myY = toCalc.apply(current); 
-		if (!(Double.isNaN(myY) || (int) (canvas.getYOrigin() - myY) > hoehe || (int) (canvas.getYOrigin() - myY) < -hoehe))
-		{
-			point= transformer.convertXY(current, toCalc.apply(current));
-			Collections.addAll(pointslist, point[0], point[1]);
-		}
+		
+		pointslist.add(current); 
+		pointslist.add(toCalc.apply(current)); 
+		
 		double nextStep = min_step;  
-		while(current < canvas.getIntervall()[1]) {	
+		while(current < xMax) {	
 			nextStep = calculateByPruning(toCalc, current, nextStep, max_step, delta);  
 			current = current + nextStep; 
 			
-			myY = toCalc.apply(current); 
-			if (!(Double.isNaN(myY) || (int) (canvas.getYOrigin() - myY) > hoehe || (int) (canvas.getYOrigin() - myY) < -hoehe))
-			{
-				point= transformer.convertXY(current, toCalc.apply(current));
-				Collections.addAll(pointslist, point[0], point[1]);
-			}
+			pointslist.add(current); 
+			pointslist.add(toCalc.apply(current)); 
+			
 			nextStep=min_step; 
 		}
-		int[] polygon = new int[pointslist.size()];
+		double[] polygon = new double[pointslist.size()];
 		for (int i = 0; i < pointslist.size(); i++)
 			polygon[i] = pointslist.get(i);
 		return polygon;

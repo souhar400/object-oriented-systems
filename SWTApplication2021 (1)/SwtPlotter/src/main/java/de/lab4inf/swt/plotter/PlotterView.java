@@ -189,6 +189,10 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		coorSystem.setLayout(new GridLayout(4, false));
 		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
 		coorSystem.setLayoutData(gd);
+		
+		
+	
+				
 
 		Label xMinLabel = new Label(coorSystem, SWT.NONE);
 		xMinLabel.setText("Xmin ");
@@ -228,7 +232,22 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
 		myYmaxText.setLayoutData(gd);
 
-		Button updateButton = new Button(coorSystem, SWT.PUSH);
+		
+		
+		Label strategyLabel = new Label(editMySet, SWT.NONE);
+		strategyLabel.setText("Strategy");
+		gd = new GridData(SWT.LEFT, SWT.CENTER, false, false);
+		strategyLabel.setLayoutData(gd);
+		
+		
+		Combo combo = new Combo(editMySet, SWT.DROP_DOWN | SWT.READ_ONLY);
+		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+		combo.setLayoutData(gd);
+		combo.setItems(new String[] { "Curvature", "Pruninng", "Error rate", "Divide and conquer"});
+		combo.select(0);
+		
+		
+		Button updateButton = new Button(editMySet, SWT.PUSH);
 		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
 		gd.horizontalSpan = 4;
 		updateButton.setLayoutData(gd);
@@ -259,6 +278,8 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 				}
 			}
 		});
+		
+		
 		
 		createEditSet(editMySet); 
 		

@@ -6,5 +6,5 @@ import de.lab4inf.swt.plotter.SWTCanvasPlotter;
 
 public interface StepSizeStrategy {
 
-	public int[] calculatePoints(SWTCanvasPlotter canvas, PlotterFunction fct);
+	public double[] calculatePoints(PlotterFunction fct, double xMin, double xMax, double yMin, double yMax, int width, int hoehe);
 }

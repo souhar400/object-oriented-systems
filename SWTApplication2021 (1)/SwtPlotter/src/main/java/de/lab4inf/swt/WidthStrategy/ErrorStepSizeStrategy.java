@@ -16,41 +16,38 @@ public class ErrorStepSizeStrategy implements StepSizeStrategy {
 	private TreeMap<Double, Double> xy;
 
 	@Override
-	public int[] calculatePoints(SWTCanvasPlotter canvas, PlotterFunction fct) {
+	public double[] calculatePoints(PlotterFunction fct, double xMin, double xMax, double yMin, double yMax, int width,
+			int hoehe) {
 
-		double maxX = canvas.getIntervall()[1];
-		double minX = canvas.getIntervall()[0];
-		double width = canvas.getMaxU();
-		List<Integer> pointslist = new ArrayList<>();
-		double hoehe = canvas.getMaxV();
+//		double maxX = canvas.getIntervall()[1];
+//		double minX = canvas.getIntervall()[0];
+//		double width = canvas.getMaxU();
+		List<Double> pointslist = new ArrayList<>();
+//		double hoehe = canvas.getMaxV();
 
-		Trafo transformer = new Trafo(canvas);
+//		Trafo transformer = new Trafo(canvas);
 		Function<Double, Double> toCalc = fct.getFunction();
 		// error = ((maxX-minX) / (double) width);
 		error = 1 / ((double) width);
 
 		xy = new TreeMap<Double, Double>();
-		xy.put(minX, toCalc.apply(minX));
+		xy.put(xMin, toCalc.apply(xMin));
 
-		xy.put(maxX, toCalc.apply(maxX));
+		xy.put(xMax, toCalc.apply(xMax));
 
-		double mid = (minX + maxX) / 2;
+		double mid = (xMin + xMax) / 2;
 		xy.put(mid, toCalc.apply(mid));
-		addPoint(toCalc, minX, mid, false);
-		addPoint(toCalc, mid, maxX, false);
+		addPoint(toCalc, xMin, mid, false);
+		addPoint(toCalc, mid, xMax, false);
 		double myY;
 		int[] xyArray = new int[xy.size() * 2];
-		int[] point=null;
+		int[] point = null;
 
 		for (Map.Entry<Double, Double> entry : xy.entrySet()) {
-			myY = entry.getValue();
-			if (!(Double.isNaN(myY) || (int) (canvas.getYOrigin() - myY) > hoehe
-					|| (int) (canvas.getYOrigin() - myY) < -hoehe)) {
-				point = transformer.convertXY(entry.getKey(), entry.getValue());
-				Collections.addAll(pointslist, point[0], point[1]);
-			}
+			pointslist.add(entry.getKey());
+			pointslist.add(entry.getValue());
 		}
-		int[] polygon = new int[pointslist.size()];
+		double[] polygon = new double[pointslist.size()];
 		for (int i = 0; i < pointslist.size(); i++)
 			polygon[i] = pointslist.get(i);
 		return polygon;

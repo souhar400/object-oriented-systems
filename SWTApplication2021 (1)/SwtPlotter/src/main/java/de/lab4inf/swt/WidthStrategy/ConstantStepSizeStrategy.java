@@ -10,34 +10,23 @@ import de.lab4inf.swt.plotter.SWTCanvasPlotter;
 public class ConstantStepSizeStrategy implements StepSizeStrategy {
 
 	@Override
-	public int[] calculatePoints(SWTCanvasPlotter canvas, PlotterFunction fct) {
-		double[] xIntervall = canvas.getIntervall();
-		double[] yIntervall = canvas.getyIntervall();
-		
-		int breite = canvas.getMaxU();
-		int hoehe = canvas.getMaxV();
-		int xOrigin = canvas.getXOrigin();
-		
-		double scalU = breite / ((xIntervall[1] - xIntervall[0]));
-		double scalV = hoehe / (yIntervall[1] - yIntervall[0]);
+	public double[] calculatePoints(PlotterFunction fct, double xMin, double xMax, double yMin, double yMax, int width, int hoehe) {
+
 		Function<Double, Double> myFct = fct.getFunction();
 
-		List<Integer> list = new ArrayList<Integer>();
-		for (int k = -xOrigin; k <= breite - xOrigin; k = k + 1) {
-			double zwischenK = k * ((xIntervall[1] - xIntervall[0]) / breite);
-			double fctValue = myFct.apply(zwischenK);
-			int yPixel = (int) (scalV * fctValue);
-
-			if (!(yPixel < -hoehe || yPixel > hoehe || Double.isNaN(fctValue))) {
-				list.add(canvas.translateU(zwischenK * scalU));
-				list.add(canvas.translateV(scalV * fctValue));
-			}
+		List<Double> list = new ArrayList<Double>();
+		double schritt = (xMax-xMin)/width; 
+		double current= xMin; 
+		while(current < xMax) {	
+			list.add(current); 
+			list.add(myFct.apply(current)); 
+			current = current + schritt; 
 		}
-		int[] polygon = new int[list.size()];
+		
+		double[] polygon = new double[list.size()];
 		for (int i = 0; i < list.size(); i++)
 			polygon[i] = list.get(i);
-
 		return polygon;
 	}
-
+	
 }
