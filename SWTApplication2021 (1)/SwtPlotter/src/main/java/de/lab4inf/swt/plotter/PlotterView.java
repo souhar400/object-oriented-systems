@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.function.Function;
 
+import org.apache.maven.surefire.shared.compress.archivers.zip.ZipArchiveEntryRequest;
 import org.eclipse.jface.preference.ColorSelector;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -15,6 +16,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -34,11 +36,26 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
 import de.lab4inf.swt.SWTApplication;
+import de.lab4inf.swt.WidthStrategy.ConstantStepSizeStrategy;
+import de.lab4inf.swt.WidthStrategy.CurvatureStepSizeStrategy;
+import de.lab4inf.swt.WidthStrategy.DivideAndConquerStepSizeStrategy;
+import de.lab4inf.swt.WidthStrategy.ErrorStepSizeStrategy;
+import de.lab4inf.swt.WidthStrategy.PrunningStepSizeStrategy;
+import de.lab4inf.swt.WidthStrategy.StepSizeStrategy;
 
 public class PlotterView extends SWTApplication implements PropertyChangeListener {
 	SWTCanvasPlotter canvas;
 	private Text myText;
 	private TreeViewer myViewer; 
+	private StepSizeStrategy strategy; 
+
+	public StepSizeStrategy getStrategy() {
+		return strategy;
+	}
+
+	public void setStrategy(StepSizeStrategy strategy) {
+		this.strategy = strategy;
+	}
 
 	public TreeViewer getMyViewer() {
 		return myViewer;
@@ -73,6 +90,7 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		super();
 		support = new PropertyChangeSupport(this);
 		this.modell = modell;
+		this.strategy = new ConstantStepSizeStrategy(); 
 	}
 
 	public void setStatusField(Label statusField) {
@@ -243,7 +261,7 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		Combo combo = new Combo(editMySet, SWT.DROP_DOWN | SWT.READ_ONLY);
 		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
 		combo.setLayoutData(gd);
-		combo.setItems(new String[] { "Curvature", "Pruninng", "Error rate", "Divide and conquer"});
+		combo.setItems(new String[] { "Curvature", "Pruninng", "Error rate", "Divide and conquer", "Constant step size"});
 		combo.select(0);
 		
 		
@@ -252,6 +270,40 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		gd.horizontalSpan = 4;
 		updateButton.setLayoutData(gd);
 		updateButton.setText("Update");
+		
+		combo.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				switch(combo.getSelectionIndex()) {
+				case 0:
+					setStrategy(new CurvatureStepSizeStrategy());
+					break; 
+				case 1:
+					setStrategy(new PrunningStepSizeStrategy());
+					break; 
+				case 2:
+					setStrategy(new ErrorStepSizeStrategy());
+					break; 
+				case 3:
+					setStrategy(new DivideAndConquerStepSizeStrategy());
+					break; 
+				case 4: 
+					setStrategy(new ConstantStepSizeStrategy());
+					break; 
+				}
+				canvas.setStrategy(strategy);
+				canvas.redraw();
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+	
+		});
 		
 		
 		updateButton.addListener(SWT.Selection, new Listener() {

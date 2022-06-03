@@ -30,7 +30,11 @@ import org.eclipse.swt.widgets.Canvas;
 public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements ResizeCanvas {
 
 	private Color myColor;
-	private StepSizeStrategy strategy = new ErrorStepSizeStrategy();
+	private StepSizeStrategy strategy = new ConstantStepSizeStrategy(); 
+	
+	
+	
+
 	Trafo transformer;
 	private boolean drawPoints = true;
 
@@ -266,6 +270,14 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 
 	public int getYOrigin() {
 		return yOrigin;
+	}
+	
+	public StepSizeStrategy getStrategy() {
+		return strategy;
+	}
+
+	public void setStrategy(StepSizeStrategy strategy) {
+		this.strategy = strategy;
 	}
 
 	// getter/setter for scaling factors

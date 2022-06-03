@@ -35,8 +35,6 @@ public class DivideAndConquerStepSizeStrategy implements StepSizeStrategy {
 
 		double min_step = xMax / width * MIN_STEP_PX;
 		double max_step = xMax / width * MAX_STEP_PX;
-		System.out.println("max_Step : " + max_step);
-		System.out.println("min_step : " + min_step);
 
 		Function<Double, Double> toCalc = fct.getFunction();
 		List<Double> pointslist = new ArrayList<>();
