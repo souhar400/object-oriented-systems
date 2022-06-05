@@ -16,12 +16,11 @@ public class ModelProvider extends PlotterModel implements ITreeContentProvider 
 
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object NewInput) {
+		viewer.refresh();
 	}
 
 	@Override
 	public Object[] getElements(Object inputElement) {
-//		return ((HashMap<String,PlotterFunction>)inputElement).keySet().toArray();
-
 		ModelProvider myModel = (ModelProvider) inputElement;
 		return myModel.getFunctions().values().toArray();
 	}
@@ -36,9 +35,6 @@ public class ModelProvider extends PlotterModel implements ITreeContentProvider 
 
 	@Override
 	public Object[] getChildren(Object parentElement) {
-//		PlotterFunction pf = this.getFunctions().get((String) parentElement);
-//		Object[] rv = {pf.getName(), pf.getColor(), pf.getLineStyle()};
-//		return (Object[])rv;
 		PlotterFunction pf = (PlotterFunction) parentElement;
 		Object[] rv = { pf.getName(), pf.getColor(), pf.getLineStyle() };
 		return (Object[]) rv;

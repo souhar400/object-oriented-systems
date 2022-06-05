@@ -122,6 +122,7 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 	}
 
 	// ToolBar
+	@Override
 	protected ToolBar createToolBar(Composite parent) {
 		ToolBar toolbar = new ToolBar(parent, SWT.BORDER | SWT.HORIZONTAL);
 		ToolItem exitItem = new ToolItem(toolbar, SWT.NONE);
@@ -132,6 +133,7 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 	}
 
 	// StatusBar
+	@Override
 	protected Composite createParamBar(Composite parent) {
 		GridData gd;
 		Group sb = new Group(parent, SWT.HORIZONTAL);

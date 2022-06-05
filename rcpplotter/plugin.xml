@@ -57,7 +57,17 @@
                relative="top"
                visible="true">
          </view>
+         <view
+               id="de.lab4inf.rcp.plotter.parts.EditorView"
+               minimized="false"
+               relationship="stack"
+               relative="right"
+               visible="true">
+         </view>
       </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.services">
    </extension>
 
 </plugin>

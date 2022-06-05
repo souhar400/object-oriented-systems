@@ -28,11 +28,13 @@ public class PlotterModel {
 	}
 
 	////////////
-	protected HashMap<String, PlotterFunction> getFunctions() {
+	public HashMap<String, PlotterFunction> getFunctions() {
 		return plotterFunctions;
 	}
-
-	protected void addFunction(String script, PlotterFunction myFunction) {
+	public void setFunctions(HashMap<String, PlotterFunction> fct) {
+		this.plotterFunctions = fct;
+	}
+	public void addFunction(String script, PlotterFunction myFunction) {
 		Objects.requireNonNull(myFunction);
 		HashMap<String, PlotterFunction> oldMap = this.plotterFunctions;
 		HashMap<String, PlotterFunction> newMap = new HashMap<String, PlotterFunction>();
@@ -43,7 +45,7 @@ public class PlotterModel {
 		support.firePropertyChange("AddFunction", oldMap, newMap);
 	}
 
-	protected void removeFunctions(String myFunctionString) {
+	public void removeFunctions(String myFunctionString) {
 		Objects.requireNonNull(myFunctionString);
 		HashMap<String, PlotterFunction> oldMap = this.plotterFunctions;
 		HashMap<String, PlotterFunction> newMap = new HashMap<String, PlotterFunction>();
@@ -55,7 +57,7 @@ public class PlotterModel {
 		support.firePropertyChange("removeFunction", null, newMap);
 	}
 
-	protected void clear() {
+	public void clear() {
 		HashMap<String, PlotterFunction> oldSet = this.plotterFunctions;
 		HashMap<String, PlotterFunction> newSet = new HashMap<String, PlotterFunction>();
 		plotterFunctions = newSet;
