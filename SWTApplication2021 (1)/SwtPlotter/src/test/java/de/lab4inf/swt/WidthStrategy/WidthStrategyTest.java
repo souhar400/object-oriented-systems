@@ -21,7 +21,7 @@ public abstract class WidthStrategyTest {
 	private int hoehe = 1000, breite = 400;
 	private double error= 1/(yMax -yMin); 
 	private double heightMax = (((xMax - xMin) / breite) * hoehe) / 2;
-	private double tolerance = ((xMax - xMin) / ((double) breite)) * 1.1;
+	private double tolerance = ((xMax - xMin) / ((double) breite))*1.1;
 	
 	
 	@BeforeEach
@@ -41,35 +41,35 @@ public abstract class WidthStrategyTest {
 	}
 	
 	@Test
-	public void testSimpleFunction() {
+	public void testIdFunction() {
 		Function<Double, Double> func = x -> x;
 		PlotterFunction myFct = new PlotterFunction(func, "testFct", new int[] { 255, 255, 255 }, 1);
 		check(myFct);
 	}
 
 	@Test
-	public void testSimpleNegFunction() {
+	public void testNegIdFunction() {
 		Function<Double, Double> func = x -> -x;
 		PlotterFunction myFct = new PlotterFunction(func, "testFct", new int[] { 255, 255, 255 }, 1);
 		check(myFct);
 	}
 
 	@Test
-	public void testSin() {
+	public void testInverseXSin() {
 		Function<Double, Double> func = x -> Math.sin(1 / x);
 		PlotterFunction myFct = new PlotterFunction(func, "testFct", new int[] { 255, 255, 255 }, 1);
 		check(myFct);
 	}
 
 	@Test
-	public void testCos() {
+	public void testInverseXCos() {
 		Function<Double, Double> func = x -> Math.cos(1 / x);
 		PlotterFunction myFct = new PlotterFunction(func, "testFct", new int[] { 255, 255, 255 }, 1);
 		check(myFct);
 	}
 
 	@Test
-	public void testTan() {
+	public void testComplexTan() {
 		Function<Double, Double> func = x -> Math.tan(Math.sin(1 / x));
 		PlotterFunction myFct = new PlotterFunction(func, "testFct", new int[] { 255, 255, 255 }, 1);
 		check(myFct);
@@ -118,8 +118,7 @@ public abstract class WidthStrategyTest {
 			double second = xy[i + 2];
 			double mid = (first + second) / 2;
 			double expected = func.getFunction().apply(mid);
-			if (!Double.isNaN(xy[i + 1]) && !Double.isNaN(xy[i + 3]) && Math.abs(expected) < heightMax
-					&& (second - first) > tolerance) {
+			if ((second - first) > tolerance && Math.abs(expected)< heightMax) {
 				assertEquals(expected, (xy[i + 1] + xy[i + 3]) / 2, error);
 			}
 		}
