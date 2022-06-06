@@ -15,9 +15,9 @@ public class WorkbenchPropertyChangeListener implements IPropertyChangeListener 
 	private SWTCanvasPlotter plotter;
 	private ModelProvider model;
 	private static JSEngine jsEngine = new JSEngine();
-	int lineStyle=0; 
-	int[] color ; 
-	Random rdm ;  
+	private int lineStyle=0; 
+	private int[] color ; 
+	private Random rdm ;  
 	
 	public WorkbenchPropertyChangeListener(ModelProvider model) {
 		this.model = model;

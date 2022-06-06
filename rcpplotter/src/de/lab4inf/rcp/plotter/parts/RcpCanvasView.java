@@ -40,18 +40,7 @@ import de.lab4inf.swt.plotter.Trafo;
 
 public class RcpCanvasView extends ViewPart {
 	private ModelProvider modell;
-	private PlotterView view;
-	SWTCanvasPlotter plotter;
-
-	public PlotterView getView() {
-		return view;
-	}
-
-	public void setView(PlotterView view) {
-		this.view = view;
-	}
-
-	private PlotterController controller;
+	private SWTCanvasPlotter plotter;
 	private IStatusLineManager manager;
 
 	@PostConstruct
@@ -162,8 +151,7 @@ public class RcpCanvasView extends ViewPart {
 //				
 //			}});
 		// view.addPropertyChangeListener(controller);
-		addModelListener();
-		addMouseMoveListener();
+		addListener();
 	}
 
 	@Override
@@ -171,22 +159,6 @@ public class RcpCanvasView extends ViewPart {
 		super.init(site);
 		manager = site.getActionBars().getStatusLineManager();
 
-	}
-
-	public void addMouseMoveListener() {
-		plotter.addMouseMoveListener(new MouseMoveListener() {
-
-			@Override
-			public void mouseMove(MouseEvent e) {
-				Trafo trafo = new Trafo(plotter);
-				int u = e.x;
-				int v = e.y;
-				double[] xy = trafo.convertUV(u, v);
-				if (manager != null)
-					manager.setMessage(String.format("Koordinaten: x=%.2f,y=%.2f", xy[0], xy[1]));
-			}
-
-		});
 	}
 
 	@Focus
@@ -254,7 +226,7 @@ public class RcpCanvasView extends ViewPart {
 
 	}
 
-	private void addModelListener() {
+	private void addListener() {
 		modell.addPropertyChangeListener(new PropertyChangeListener() {
 
 			@Override
@@ -263,6 +235,19 @@ public class RcpCanvasView extends ViewPart {
 				plotter.setFcts(newValue);
 				plotter.redraw();
 
+			}
+
+		});
+		plotter.addMouseMoveListener(new MouseMoveListener() {
+
+			@Override
+			public void mouseMove(MouseEvent e) {
+				Trafo trafo = new Trafo(plotter);
+				int u = e.x;
+				int v = e.y;
+				double[] xy = trafo.convertUV(u, v);
+				if (manager != null)
+					manager.setMessage(String.format("Koordinaten: x=%.2f,y=%.2f", xy[0], xy[1]));
 			}
 
 		});

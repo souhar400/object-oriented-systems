@@ -36,7 +36,7 @@ public class JSEngine {
 	 * @return Function<Double,Double>
 	 */
 	@SuppressWarnings("unchecked")
-	public Map.Entry<String, PlotterFunction> parser(String input, HashMap<String, PlotterFunction> functions) {
+	public Map.Entry<String, PlotterFunction> parser(String input) {
 		try {
 			input = input.replaceAll("\\s+","");
 			String functionHeader = ((Character)input.charAt(0)).toString();			

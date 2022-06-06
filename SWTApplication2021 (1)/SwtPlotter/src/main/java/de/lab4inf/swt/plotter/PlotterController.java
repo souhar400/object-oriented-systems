@@ -40,7 +40,7 @@ public class PlotterController implements PropertyChangeListener {
 			
 			String script = evt.getNewValue().toString();
 
-			Map.Entry<String, PlotterFunction> result= jsEngine.parser(script,    modell.getFunctions());
+			Map.Entry<String, PlotterFunction> result= jsEngine.parser(script);
 			
 			if(result.getKey().equals("Dummy")) {
 				view.setMyText("Ungültige Eingabe");

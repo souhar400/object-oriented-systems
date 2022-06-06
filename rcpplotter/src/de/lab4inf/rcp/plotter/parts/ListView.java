@@ -28,19 +28,15 @@ import org.eclipse.ui.part.ViewPart;
 
 
 public class ListView extends ViewPart {
-	private Tree tree;
+	
 	private TreeViewer treeViewer;
 	private ModelProvider provider;
-	private RcpCanvasView rcpView;
+
 
 	@PostConstruct
 	public void createPartControl(Composite parent) {
-		tree = new Tree(parent, SWT.NONE);
+		Tree tree = new Tree(parent, SWT.NONE);
 		treeViewer = new TreeViewer(tree);
-		
-		IWorkbenchPage[] pages = this.getViewSite().getWorkbenchWindow().getPages();
-		IViewPart part = pages[0].findView("de.lab4inf.rcp.plotter.parts.RcpCanvasView");
-		rcpView = (RcpCanvasView) part;
 		
 		getViewSite().setSelectionProvider(treeViewer);
 		

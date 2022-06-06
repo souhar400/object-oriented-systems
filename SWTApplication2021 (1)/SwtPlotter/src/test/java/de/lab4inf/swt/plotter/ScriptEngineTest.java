@@ -21,46 +21,46 @@ public class ScriptEngineTest {
 	
 	@Test
 	public void functionWithSpaceAnfang() {
-		Map.Entry<String, PlotterFunction> result = jsEngine.parser("     f(x)=sin(x)", functions); 
+		Map.Entry<String, PlotterFunction> result = jsEngine.parser("     f(x)=sin(x)"); 
 		assertEquals(Math.sin(Math.PI/2), result.getValue().getFunction().apply(Math.PI/2));
 	}
 	
 	@Test
 	public void testfunctionWithSpaceEnde() {
-		Map.Entry<String, PlotterFunction> result = jsEngine.parser("f(x)=x*x   ", functions); 
+		Map.Entry<String, PlotterFunction> result = jsEngine.parser("f(x)=x*x   "); 
 		assertEquals(4.0, result.getValue().getFunction().apply(2.0));
 	}
 	
 	@Test
 	public void testwithoutMathDotSin() {
-		Map.Entry<String, PlotterFunction> result = jsEngine.parser("f(x)=sin(x)", functions); 
+		Map.Entry<String, PlotterFunction> result = jsEngine.parser("f(x)=sin(x)"); 
 		assertEquals(Math.sin(Math.PI), result.getValue().getFunction().apply(Math.PI));
 	}
 	
 	@Test
 	public void testnegativeTest() {
-		Map.Entry<String, PlotterFunction> result = jsEngine.parser("f(x)= - x*x*x", functions); 
+		Map.Entry<String, PlotterFunction> result = jsEngine.parser("f(x)= - x*x*x"); 
 		assertEquals(-8, result.getValue().getFunction().apply(2.0));
 	}
 	@Test
 	public void testUnsinn() {
-		Map.Entry<String, PlotterFunction> result = jsEngine.parser("unsinn", functions); 
+		Map.Entry<String, PlotterFunction> result = jsEngine.parser("unsinn"); 
 		assertEquals("Dummy", result.getKey());
 	}
 	@Test
 	public void testUnsinn1() {
-		Map.Entry<String, PlotterFunction> result = jsEngine.parser("f(x)=sin;", functions); 
+		Map.Entry<String, PlotterFunction> result = jsEngine.parser("f(x)=sin;"); 
 		assertEquals("Dummy", result.getKey());
 	}
 	@Test
 	public void testUnsinn2() {
-		Map.Entry<String, PlotterFunction> result = jsEngine.parser("f(x)=u", functions); 
+		Map.Entry<String, PlotterFunction> result = jsEngine.parser("f(x)=u"); 
 		assertEquals("Dummy", result.getKey());
 	}
 
 	@Test
 	public void testUnsinn3() {
-		Map.Entry<String, PlotterFunction> result = jsEngine.parser("f(x)=?", functions); 
+		Map.Entry<String, PlotterFunction> result = jsEngine.parser("f(x)=?"); 
 		assertEquals("Dummy", result.getKey());
 	}
 
