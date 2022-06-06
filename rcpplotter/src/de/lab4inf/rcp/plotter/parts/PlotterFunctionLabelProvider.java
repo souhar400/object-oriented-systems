@@ -19,8 +19,7 @@ public class PlotterFunctionLabelProvider extends LabelProvider {
 	public String getText(Object element) {
 		if(element instanceof int[]) {
 			int[] color  = (int [])element;
-			Color c = new Color(color[0], color[1], color[2]);
-			return c.toString();
+			return "Color {" + String.valueOf(color[0]) + ", " + String.valueOf(color[1]) + ", " + String.valueOf(color[2]) + "}";
 		}
 		else if (element instanceof PlotterFunction)
 			return ((PlotterFunction) element).getName().split("=")[0]; 

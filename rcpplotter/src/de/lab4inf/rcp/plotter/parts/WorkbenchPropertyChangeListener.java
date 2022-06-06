@@ -15,7 +15,7 @@ public class WorkbenchPropertyChangeListener implements IPropertyChangeListener 
 	private SWTCanvasPlotter plotter;
 	private ModelProvider model;
 	private static JSEngine jsEngine = new JSEngine();
-	private int lineStyle=0; 
+	private int lineStyle; 
 	private int[] color ; 
 	private Random rdm ;  
 	
@@ -23,6 +23,7 @@ public class WorkbenchPropertyChangeListener implements IPropertyChangeListener 
 		this.model = model;
 		this.rdm = new Random(); 
 		this.color = null;
+		this.lineStyle = 0;
 	}
 	public void registerCanvas(SWTCanvasPlotter plotter) {
 		this.plotter = plotter;
@@ -49,7 +50,7 @@ public class WorkbenchPropertyChangeListener implements IPropertyChangeListener 
 		}
 		else if(prop.equals("clear"))
 			model.clear();
-		if(prop.equals("strategy")) {
+		else if(prop.equals("strategy")) {
 			StepSizeStrategy strat = null;
 			if(newValue.equals("Curvature"))
 				strat = new CurvatureStepSizeStrategy();
@@ -65,6 +66,19 @@ public class WorkbenchPropertyChangeListener implements IPropertyChangeListener 
 				plotter.setStrategy(strat);
 			plotter.redraw();
 		}
+		else if(prop.equals("color")) {
+			String[] splitValues = newValue.split(" ");
+			int index = 0;
+			color = new int[splitValues.length];
+			for (String string : splitValues) {
+				color[index] = Integer.valueOf(string);
+				index++;
+			}
+		}
+		else if(prop.equals("styleLine")) {
+			this.lineStyle = Integer.valueOf(newValue);
+		}
+		
 	}
 	
 
