@@ -30,7 +30,7 @@ public class DivideAndConquerStepSizeStrategy implements StepSizeStrategy {
 //		int sizeScreen = canvas.getMaxU();
 //		double sizeWorld = canvas.getIntervall()[1]-canvas.getIntervall()[0];
 //		Trafo transformer = new Trafo(canvas);
-		double delta = ((xMax - xMin) / (hoehe));
+		double delta = 1 / (double) hoehe;
 //		double hoehe = canvas.getMaxV();
 
 		double min_step = xMax / width * MIN_STEP_PX;

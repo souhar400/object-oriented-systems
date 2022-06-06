@@ -22,7 +22,7 @@ public class CurvatureStepSizeStrategy implements StepSizeStrategy {
 
 	private static final int MAX_STEP_PX = 10;
 
-	private static final double h = 2;
+	private static final double h = 5;
 
 	@Override
 	public double[] calculatePoints(PlotterFunction fct, double xMin, double xMax, double yMin, double yMax, int width, int hoehe) {

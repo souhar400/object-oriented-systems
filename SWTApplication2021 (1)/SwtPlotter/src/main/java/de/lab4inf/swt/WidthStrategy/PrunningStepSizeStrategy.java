@@ -11,14 +11,14 @@ import de.lab4inf.swt.plotter.Trafo;
 public class PrunningStepSizeStrategy implements StepSizeStrategy {
 	private static final double MIN_STEP_PX =1;
 	private static final int MAX_STEP_PX = 50;
-	protected static final int MAX_ITERATIONS = 250; //25
+	protected static final int MAX_ITERATIONS = 100; //25
 	protected static final double PRUNING_FACTOR = 2.0;  //1.1
 
 	@Override
 	public double[] calculatePoints(PlotterFunction fct, double xMin, double xMax, double yMin, double yMax, int width, int hoehe) {
 		double sizeWorld = xMax-xMin;
-		double delta = (xMax - xMin)/(hoehe); 
-
+//		double delta = (xMin - xMax)/(hoehe); 
+		double delta =  1 / ((double) hoehe);
 		
 		double max_step = sizeWorld / width * MAX_STEP_PX ;
 		double min_step = sizeWorld / width* MIN_STEP_PX;
