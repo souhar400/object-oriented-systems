@@ -19,8 +19,10 @@ public abstract class WidthStrategyTest {
 	private ConstantStepSizeStrategy cStrat = new ConstantStepSizeStrategy();
 	private double xMin = -5.0, xMax = 5.0, yMin = -5.0, yMax = 5.0;
 	private int hoehe = 1000, breite = 2000;
-	private double error= 1/(yMax -yMin); 
-	private double tolerance = ((xMax - xMin) / ((double) breite))*1.1;
+	double vMax= hoehe;
+	double vScal = vMax/(yMax-yMin); 
+	private double error = vScal/vMax;
+	private double tolerance = ((xMax - xMin) / ((double) breite))*1.05;  //  =1/uScal
 	
 	
 	@BeforeEach
