@@ -120,7 +120,7 @@ public class EditorView extends ViewPart {
 		
 		Group addRemoveClean = new Group(editMySet, SWT.BEGINNING);
 		addRemoveClean.setText("Functions management");
-		addRemoveClean.setLayout(new GridLayout(3, true));
+		addRemoveClean.setLayout(new GridLayout(3, false));
 		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
 		addRemoveClean.setLayoutData(gd);
 
@@ -137,11 +137,11 @@ public class EditorView extends ViewPart {
 		cs.setEnabled(true);
 
 		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
-		gd.horizontalSpan = 2;
+		//gd.horizontalSpan = 2;
 
 		functionText = new Text(addRemoveClean, SWT.BORDER);
 		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
-		gd.horizontalSpan = 3;
+		//gd.horizontalSpan = 3;
 		functionText.setLayoutData(gd);
 
 		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
