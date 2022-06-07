@@ -5,6 +5,7 @@ import javax.annotation.PostConstruct;
 import org.eclipse.jface.preference.ColorSelector;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.swt.SWT;
@@ -229,10 +230,21 @@ public class EditorView extends ViewPart {
 
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
+				TreeSelection sel;
+				PlotterFunction pf = null;
+				String oldValue = null;
+				if(service.getSelection("de.lab4inf.rcp.plotter.parts.ListView") != null) {
+					sel = (TreeSelection) service.getSelection("de.lab4inf.rcp.plotter.parts.ListView");
+					if(sel.getFirstElement() instanceof PlotterFunction)
+						pf = (PlotterFunction) sel.getFirstElement();
+				}
 				String red = String.valueOf(cs.getColorValue().red);
 				String green = String.valueOf(cs.getColorValue().green);
 				String blue = String.valueOf(cs.getColorValue().blue);
-				firePartPropertyChanged("color", null, red + " " + green + " " + blue);
+				if(pf != null)
+					oldValue = pf.getName();
+				firePartPropertyChanged("color", oldValue, red + " " + green + " " + blue);
+				
 
 			}
 		});

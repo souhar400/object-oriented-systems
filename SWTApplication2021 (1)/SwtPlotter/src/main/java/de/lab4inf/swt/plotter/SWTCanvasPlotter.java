@@ -25,6 +25,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Path;
+import org.eclipse.swt.graphics.PathData;
 import org.eclipse.swt.widgets.Canvas;
 
 public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements ResizeCanvas {
@@ -174,7 +175,9 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 			if (drawPoints)
 				for (int i = 0; i < polygon.length; i = i + 2)
 					e.gc.drawRectangle(polygon[i] - 1, polygon[i + 1] - 1, 2, 2);
+
 			e.gc.drawPolyline(polygon);
+
 		}
 	}
 

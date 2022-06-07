@@ -74,6 +74,11 @@ public class WorkbenchPropertyChangeListener implements IPropertyChangeListener 
 				color[index] = Integer.valueOf(string);
 				index++;
 			}
+			if(event.getOldValue() != null) {
+				String key = ((String)event.getOldValue()).split("=")[0];
+				PlotterFunction fct = model.getFunctions().get(key);
+				fct.setColor(color);
+			}
 		}
 		else if(prop.equals("styleLine")) {
 			this.lineStyle = Integer.valueOf(newValue);

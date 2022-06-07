@@ -49,7 +49,6 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 
 	private Text myText;
 	private TreeViewer myViewer; 
-	private StepSizeStrategy strategy; 
 	Label statusField;
 	List functionList;
 	String functionScript = "";
@@ -63,17 +62,9 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		super();
 		support = new PropertyChangeSupport(this);
 		this.modell = modell;
-		this.strategy = new ConstantStepSizeStrategy(); 
 	}
 	
-	
-	public StepSizeStrategy getStrategy() {
-		return strategy;
-	}
 
-	public void setStrategy(StepSizeStrategy strategy) {
-		this.strategy = strategy;
-	}
 
 	public TreeViewer getMyViewer() {
 		return myViewer;
@@ -277,24 +268,26 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				StepSizeStrategy strategy = null;
 				switch(combo.getSelectionIndex()) {
 				case 0:
-					setStrategy(new CurvatureStepSizeStrategy());
+					strategy = new CurvatureStepSizeStrategy();
 					break; 
 				case 1:
-					setStrategy(new PrunningStepSizeStrategy());
+					strategy = new PrunningStepSizeStrategy();
 					break; 
 				case 2:
-					setStrategy(new ErrorStepSizeStrategy());
+					strategy = new ErrorStepSizeStrategy();
 					break; 
 				case 3:
-					setStrategy(new DivideAndConquerStepSizeStrategy());
+					strategy = new DivideAndConquerStepSizeStrategy();
 					break; 
 				case 4: 
-					setStrategy(new ConstantStepSizeStrategy());
+					strategy = new ConstantStepSizeStrategy();
 					break; 
 				}
-				canvas.setStrategy(strategy);
+				if(strategy != null)
+					canvas.setStrategy(strategy);
 				canvas.redraw();
 			}
 
