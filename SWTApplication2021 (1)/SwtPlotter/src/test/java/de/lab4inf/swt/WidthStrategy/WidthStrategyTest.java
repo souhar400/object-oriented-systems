@@ -54,6 +54,13 @@ public abstract class WidthStrategyTest {
 		PlotterFunction myFct = new PlotterFunction(func, "testFct", new int[] { 255, 255, 255 }, 1);
 		check(myFct);
 	}
+	
+	@Test
+	public void geradeFunction() {
+		Function<Double, Double> func = x -> ( 2*x-5) ;
+		PlotterFunction myFct = new PlotterFunction(func, "testFct", new int[] { 255, 255, 255 }, 1);
+		check(myFct);
+	}
 
 	@Test
 	public void testInverseXSin() {
@@ -68,7 +75,22 @@ public abstract class WidthStrategyTest {
 		PlotterFunction myFct = new PlotterFunction(func, "testFct", new int[] { 255, 255, 255 }, 1);
 		check(myFct);
 	}
+	
+	@Test
+	public void testLn() {
+		Function<Double, Double> func = x -> Math.log(x);
+		PlotterFunction myFct = new PlotterFunction(func, "testFct", new int[] { 255, 255, 255 }, 1);
+		check(myFct);
+	}
 
+	@Test
+	public void testSinX3() {
+		Function<Double, Double> func = x -> Math.sin(x*x*x);
+		PlotterFunction myFct = new PlotterFunction(func, "testFct", new int[] { 255, 255, 255 }, 1);
+		check(myFct);
+	}
+	
+	
 	@Test
 	public void testComplexTan() {
 		Function<Double, Double> func = x -> Math.tan(Math.sin(1 / x));
@@ -97,12 +119,7 @@ public abstract class WidthStrategyTest {
 		check(myFct);
 	}
 
-	@Test
-	public void testLn() {
-		Function<Double, Double> func = x -> Math.log(x);
-		PlotterFunction myFct = new PlotterFunction(func, "testFct", new int[] { 255, 255, 255 }, 1);
-		check(myFct);
-	}
+	
 
 	@Test
 	public void testExp() {
@@ -130,7 +147,6 @@ public abstract class WidthStrategyTest {
 
 		List<Double> pointslist = new ArrayList<>();
 
-//		int[] point;
 		for (int j = 0; j <= polygon.length - 2; j = j + 2) {
 			double myY = polygon[j + 1];
 
