@@ -37,7 +37,7 @@ public class WorkbenchPropertyChangeListener implements IPropertyChangeListener 
 			model.removeFunctions(newValue);
 		}
 		else if(prop.equals("addFunction")) {
-			Map.Entry<String, PlotterFunction> retVal = jsEngine.parser(newValue, model.getFunctions());
+			Map.Entry<String, PlotterFunction> retVal = jsEngine.parser(newValue);
 			PlotterFunction myFct = retVal.getValue();
 			if(retVal.getKey().equals("Dummy")) return;
 			if(color == null)

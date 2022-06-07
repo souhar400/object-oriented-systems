@@ -45,10 +45,28 @@ import de.lab4inf.swt.WidthStrategy.StepSizeStrategy;
 
 public class PlotterView extends SWTApplication implements PropertyChangeListener {
 	SWTCanvasPlotter canvas;
+	PlotterModel modell;
+
 	private Text myText;
 	private TreeViewer myViewer; 
 	private StepSizeStrategy strategy; 
-
+	Label statusField;
+	List functionList;
+	String functionScript = "";
+	int[] selections = null;
+	String removedFunction = null;
+	private Trafo trafo;
+	private PropertyChangeSupport support;
+	HashMap<String, PlotterFunction> plotterFunctions;
+	
+	public PlotterView(PlotterModel modell) {
+		super();
+		support = new PropertyChangeSupport(this);
+		this.modell = modell;
+		this.strategy = new ConstantStepSizeStrategy(); 
+	}
+	
+	
 	public StepSizeStrategy getStrategy() {
 		return strategy;
 	}
@@ -71,26 +89,6 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 
 	public void setMyText(String myText) {
 		this.myText.setText(myText);
-	}
-
-	PlotterModel modell;
-	Label statusField;
-	List functionList;
-	String functionScript = "";
-	int[] selections = null;
-	String removedFunction = null;
-	
-
-	private Trafo trafo;
-	private PropertyChangeSupport support;
-
-	HashMap<String, PlotterFunction> plotterFunctions;
-
-	public PlotterView(PlotterModel modell) {
-		super();
-		support = new PropertyChangeSupport(this);
-		this.modell = modell;
-		this.strategy = new ConstantStepSizeStrategy(); 
 	}
 
 	public void setStatusField(Label statusField) {
@@ -121,6 +119,15 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		this.removedFunction = removedFunction;
 	}
 
+	void setFunctions(HashMap<String, PlotterFunction> plotterFunctions) {
+		this.plotterFunctions = plotterFunctions;
+	}
+
+	HashMap<String, PlotterFunction> getFunctions() {
+		return this.plotterFunctions;
+	}
+
+	
 	// ToolBar
 	@Override
 	protected ToolBar createToolBar(Composite parent) {
@@ -210,10 +217,6 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
 		coorSystem.setLayoutData(gd);
 		
-		
-	
-				
-
 		Label xMinLabel = new Label(coorSystem, SWT.NONE);
 		xMinLabel.setText("Xmin ");
 		gd = new GridData(SWT.LEFT, SWT.CENTER, false, false);
@@ -252,8 +255,6 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
 		myYmaxText.setLayoutData(gd);
 
-		
-		
 		Label strategyLabel = new Label(editMySet, SWT.NONE);
 		strategyLabel.setText("Strategy");
 		gd = new GridData(SWT.LEFT, SWT.CENTER, false, false);
@@ -265,7 +266,6 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		combo.setLayoutData(gd);
 		combo.setItems(new String[] { "Curvature", "Pruninng", "Error rate", "Divide and conquer", "Constant step size"});
 		combo.select(0);
-		
 		
 		Button updateButton = new Button(editMySet, SWT.PUSH);
 		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
@@ -301,10 +301,7 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				// TODO Auto-generated method stub
-				
 			}
-			
-	
 		});
 		
 		
@@ -332,22 +329,13 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 				}
 			}
 		});
-		
-		
-		
 		createEditSet(editMySet); 
-		
 		addListeners();
-		
-		
 		return area;
-
 	}
 	
 	public Composite createEditSet(Composite parent) {
 		GridData gd;
-
-
 		Group editMySet = new Group(parent, SWT.BORDER);
 		editMySet.setLayout(new GridLayout(1, false));
 		gd = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -392,8 +380,6 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		removeButton.setLayoutData(gd);
 		removeButton.setText("Remove");
 
-		
-
 		clearButton.addListener(SWT.Selection, new Listener() {
 
 			@Override
@@ -411,7 +397,6 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 					myText.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
 				
 			}
-			
 		});
 
 
@@ -425,7 +410,6 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		else {
 			removedFunction = functionsList.getItem(index);
 		}
-
 	}
 
 	@Override
@@ -497,14 +481,7 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 
 	}
 
-	void setFunctions(HashMap<String, PlotterFunction> plotterFunctions) {
-		this.plotterFunctions = plotterFunctions;
-	}
-
-	HashMap<String, PlotterFunction> getFunctions() {
-		return this.plotterFunctions;
-	}
-
+	
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 
@@ -555,6 +532,11 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		}
 
 	}
+	
+	public void updateCanvas(HashMap<String, PlotterFunction> fctSet) {
+		canvas.setFcts(fctSet);
+		canvas.redraw();
+	}
 
 	// // to add an Observer to this support observable
 	public void addPropertyChangeListener(PropertyChangeListener pcl) {
@@ -566,8 +548,5 @@ public class PlotterView extends SWTApplication implements PropertyChangeListene
 		support.removePropertyChangeListener(pcl);
 	}
 
-	public void updateCanvas(HashMap<String, PlotterFunction> fctSet) {
-		canvas.setFcts(fctSet);
-		canvas.redraw();
-	}
+	
 }

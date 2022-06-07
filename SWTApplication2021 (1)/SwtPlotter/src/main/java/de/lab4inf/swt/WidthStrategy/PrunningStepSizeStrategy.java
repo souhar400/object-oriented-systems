@@ -10,18 +10,20 @@ import de.lab4inf.swt.plotter.Trafo;
 
 public class PrunningStepSizeStrategy implements StepSizeStrategy {
 	private static final double MIN_STEP_PX =1;
-	private static final int MAX_STEP_PX = 50;
-	protected static final int MAX_ITERATIONS = 100; //25
-	protected static final double PRUNING_FACTOR = 2.0;  //1.1
+	private static final int MAX_STEP_PX = 18;
+	protected static final int MAX_ITERATIONS = 25; 
+	protected static final double PRUNING_FACTOR = 2.0;  
 
 	@Override
 	public double[] calculatePoints(PlotterFunction fct, double xMin, double xMax, double yMin, double yMax, int width, int hoehe) {
 		double sizeWorld = xMax-xMin;
+		double vScal = (yMax-yMin)/hoehe; 	
 //		double delta = (xMin - xMax)/(hoehe); 
-		double delta =  1 / ((double) hoehe);
+//		double delta =  1 / ((double) hoehe);
+		double delta = vScal/(yMax-yMin); 
 		
-		double max_step = sizeWorld / width * MAX_STEP_PX ;
-		double min_step = sizeWorld / width* MIN_STEP_PX;
+		double max_step = (sizeWorld / width) * MAX_STEP_PX ;
+		double min_step = (sizeWorld / width)* MIN_STEP_PX;
 
 		Function<Double, Double> toCalc = fct.getFunction();
 		List<Double> pointslist = new ArrayList<>();
@@ -35,7 +37,7 @@ public class PrunningStepSizeStrategy implements StepSizeStrategy {
 		
 		double nextStep = min_step;  
 		while(current < xMax) {	
-			nextStep = calculateByPruning(toCalc, current, nextStep, max_step, delta);  
+			nextStep = calculateNextStep(toCalc, current, nextStep, max_step, delta);  
 			current = current + nextStep; 
 			
 			pointslist.add(current); 
@@ -49,7 +51,7 @@ public class PrunningStepSizeStrategy implements StepSizeStrategy {
 		return polygon;
 	}
 
-	protected double calculateByPruning(Function<Double, Double> function, double x, double lastStep, double max_step, double DELTA) {
+	protected double calculateNextStep(Function<Double, Double> function, double x, double lastStep, double max_step, double DELTA) {
 		double nextStep = lastStep;
 		double error;
 		for (int i = 0; i < MAX_ITERATIONS; i++) {

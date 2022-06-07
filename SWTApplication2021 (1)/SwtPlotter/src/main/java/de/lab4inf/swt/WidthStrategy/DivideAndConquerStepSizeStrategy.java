@@ -21,8 +21,8 @@ import de.lab4inf.swt.plotter.Trafo;
 public class DivideAndConquerStepSizeStrategy implements StepSizeStrategy {
 	private static final double MIN_STEP_PX = 1;
 	private static final int MAX_STEP_PX = 25;
-	protected static final int MAX_ITERATIONS = 25; // 25
-	protected static final double DIVIDING_FACTOR = 0.5; // 1.1
+	protected static final int MAX_ITERATIONS = 25; 
+	protected static final double DIVIDING_FACTOR = 0.5; 
 
 	@Override
 	public double[] calculatePoints(PlotterFunction fct, double xMin, double xMax, double yMin, double yMax, int width,
@@ -30,8 +30,10 @@ public class DivideAndConquerStepSizeStrategy implements StepSizeStrategy {
 //		int sizeScreen = canvas.getMaxU();
 //		double sizeWorld = canvas.getIntervall()[1]-canvas.getIntervall()[0];
 //		Trafo transformer = new Trafo(canvas);
-		double delta = 1 / (double) hoehe;
-//		double hoehe = canvas.getMaxV();
+		double vScal = (yMax-yMin)/hoehe; 	
+//		double delta = (xMin - xMax)/(hoehe); 
+//		double delta =  1 / ((double) hoehe);
+		double delta = vScal/(yMax-yMin); 
 
 		double min_step = xMax / width * MIN_STEP_PX;
 		double max_step = xMax / width * MAX_STEP_PX;

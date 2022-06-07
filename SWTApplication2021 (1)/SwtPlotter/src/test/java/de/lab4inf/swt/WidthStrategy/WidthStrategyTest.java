@@ -18,9 +18,8 @@ public abstract class WidthStrategyTest {
 	private JSEngine parser = new JSEngine();
 	private ConstantStepSizeStrategy cStrat = new ConstantStepSizeStrategy();
 	private double xMin = -5.0, xMax = 5.0, yMin = -5.0, yMax = 5.0;
-	private int hoehe = 1000, breite = 400;
+	private int hoehe = 1000, breite = 2000;
 	private double error= 1/(yMax -yMin); 
-	private double heightMax = (((xMax - xMin) / breite) * hoehe) / 2;
 	private double tolerance = ((xMax - xMin) / ((double) breite))*1.1;
 	
 	
@@ -118,7 +117,7 @@ public abstract class WidthStrategyTest {
 			double second = xy[i + 2];
 			double mid = (first + second) / 2;
 			double expected = func.getFunction().apply(mid);
-			if ((second - first) > tolerance && Math.abs(expected)< heightMax) {
+			if ((second - first) > tolerance ) {
 				assertEquals(expected, (xy[i + 1] + xy[i + 3]) / 2, error);
 			}
 		}

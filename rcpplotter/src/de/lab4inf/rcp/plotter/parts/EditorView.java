@@ -56,8 +56,7 @@ public class EditorView extends ViewPart {
 	@Override
 	public void createPartControl(Composite parent) {
 		service = getViewSite().getWorkbenchWindow().getSelectionService();
-		RcpCanvasView canvas = (RcpCanvasView) getViewSite().getWorkbenchWindow().getActivePage()
-				.findView("de.lab4inf.rcp.plotter.parts.RcpCanvasView");
+		RcpCanvasView canvas = (RcpCanvasView) getViewSite().getWorkbenchWindow().getActivePage().findView("de.lab4inf.rcp.plotter.parts.RcpCanvasView");
 		this.plotter = canvas.getPlotter();
 		provider = ModelProvider.getInstance();
 		Group editMySet = new Group(parent, SWT.BORDER);
@@ -66,6 +65,7 @@ public class EditorView extends ViewPart {
 		editMySet.setLayoutData(gd);
 
 		Group coorSystem = new Group(editMySet, SWT.BORDER);
+		coorSystem.setText("Interval settings ");
 		coorSystem.setLayout(new GridLayout(4, false));
 		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
 		coorSystem.setLayoutData(gd);
@@ -114,12 +114,59 @@ public class EditorView extends ViewPart {
 		updateButton.setLayoutData(gd);
 		updateButton.setText("Update");
 
+		
+		Label emptyLine = new Label(editMySet, SWT.NONE);
+		emptyLine.setText("");
+		
+		Group addRemoveClean = new Group(editMySet, SWT.BEGINNING);
+		addRemoveClean.setText("Functions management");
+		addRemoveClean.setLayout(new GridLayout(3, true));
+		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+		addRemoveClean.setLayoutData(gd);
+
+		Label emptyLine1 = new Label(editMySet, SWT.NONE);
+		emptyLine1.setText("");
+		
+		lineStylePicker = new Combo(addRemoveClean, SWT.DROP_DOWN | SWT.READ_ONLY);
+		gd = new GridData(SWT.RIGHT, SWT.FILL, false, false);
+		lineStylePicker.setLayoutData(gd);
+		lineStylePicker.setItems(new String[] { "Solid", "Dash", "Dot", "DashDotDot", "DashDot" });
+		lineStylePicker.select(0);
+
+		cs = new ColorSelector(addRemoveClean);
+		cs.setEnabled(true);
+
+		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+		gd.horizontalSpan = 2;
+
+		functionText = new Text(addRemoveClean, SWT.BORDER);
+		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+		gd.horizontalSpan = 3;
+		functionText.setLayoutData(gd);
+
+		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+		gd.horizontalSpan = 3;
+
+		addButton = new Button(addRemoveClean, SWT.PUSH);
+		addButton.setLayoutData(gd);
+		addButton.setText("Add");
+
+		removeButton = new Button(addRemoveClean, SWT.PUSH);
+		removeButton.setLayoutData(gd);
+		removeButton.setText("Remove");
+
+		clearButton = new Button(addRemoveClean, SWT.PUSH);
+		clearButton.setLayoutData(gd);
+		clearButton.setText("Clear");
+
+		parentGroup = editMySet;
+		
 		Label strategyLabel = new Label(editMySet, SWT.NONE);
 		strategyLabel.setText("Strategy");
 		gd = new GridData(SWT.LEFT, SWT.CENTER, false, false);
 		strategyLabel.setLayoutData(gd);
-
-		Combo combo = new Combo(editMySet, SWT.DROP_DOWN | SWT.READ_ONLY);
+		
+		Combo combo = new Combo(editMySet, SWT.DROP_DOWN | SWT.READ_ONLY |SWT.BORDER | SWT.SINGLE);
 		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
 		combo.setLayoutData(gd);
 		combo.setItems(
@@ -156,45 +203,6 @@ public class EditorView extends ViewPart {
 
 			}
 		});
-
-		Group addRemoveClean = new Group(editMySet, SWT.BEGINNING);
-		addRemoveClean.setLayout(new GridLayout(3, true));
-		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
-		addRemoveClean.setLayoutData(gd);
-
-		lineStylePicker = new Combo(addRemoveClean, SWT.DROP_DOWN | SWT.READ_ONLY);
-		gd = new GridData(SWT.RIGHT, SWT.FILL, false, false);
-		lineStylePicker.setLayoutData(gd);
-		lineStylePicker.setItems(new String[] { "Solid", "Dash", "Dot", "DashDotDot", "DashDot" });
-		lineStylePicker.select(0);
-
-		cs = new ColorSelector(addRemoveClean);
-		cs.setEnabled(true);
-
-		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
-		gd.horizontalSpan = 2;
-
-		functionText = new Text(addRemoveClean, SWT.BORDER);
-		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
-		gd.horizontalSpan = 3;
-		functionText.setLayoutData(gd);
-
-		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
-		gd.horizontalSpan = 3;
-
-		addButton = new Button(addRemoveClean, SWT.PUSH);
-		addButton.setLayoutData(gd);
-		addButton.setText("Add");
-
-		removeButton = new Button(addRemoveClean, SWT.PUSH);
-		removeButton.setLayoutData(gd);
-		removeButton.setText("Remove");
-
-		clearButton = new Button(addRemoveClean, SWT.PUSH);
-		clearButton.setLayoutData(gd);
-		clearButton.setText("Clear");
-
-		parentGroup = editMySet;
 		addListeners();
 	}
 
