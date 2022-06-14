@@ -1,20 +1,23 @@
 package de.lab4inf.rcp.plotter.parts;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.function.Function;
 
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 
 import de.lab4inf.swt.WidthStrategy.*;
 import de.lab4inf.swt.plotter.JSEngine;
+import de.lab4inf.swt.plotter.NewParser;
 import de.lab4inf.swt.plotter.PlotterFunction;
 import de.lab4inf.swt.plotter.SWTCanvasPlotter;
 
 public class WorkbenchPropertyChangeListener implements IPropertyChangeListener {
 	private SWTCanvasPlotter plotter;
 	private ModelProvider model;
-	private static JSEngine jsEngine = new JSEngine();
+	private static NewParser jsEngine = new NewParser();
 	private int lineStyle; 
 	private int[] color ; 
 	private Random rdm ;  
@@ -37,16 +40,17 @@ public class WorkbenchPropertyChangeListener implements IPropertyChangeListener 
 			model.removeFunctions(newValue);
 		}
 		else if(prop.equals("addFunction")) {
-			Map.Entry<String, PlotterFunction> retVal = jsEngine.parser(newValue);
-			PlotterFunction myFct = retVal.getValue();
-			if(retVal.getKey().equals("Dummy")) return;
-			if(color == null)
-					color=  new int[] { rdm.nextInt(255),  rdm.nextInt(255),  rdm.nextInt(255)}; 
-			
-			myFct.setColor(color);
-			myFct.setLineStyle(this.lineStyle+1);
-			model.addFunction(retVal.getKey(), myFct);
-			this.color=null;
+			HashMap<String, PlotterFunction> myMap = jsEngine.parser(newValue);
+			if (myMap.keySet().contains("Dummy")) return; 
+			for (Map.Entry<String, PlotterFunction> entry : myMap.entrySet()) {
+				PlotterFunction fct = entry.getValue();
+				if (color == null)
+					color = new int[] { rdm.nextInt(255), rdm.nextInt(255), rdm.nextInt(255) };
+				fct.setColor(color);
+				fct.setLineStyle(this.lineStyle+1);				
+				model.addFunction(entry.getKey(), fct); // f(x);PlotterFct
+				this.color = null;
+			}
 		}
 		else if(prop.equals("clear"))
 			model.clear();

@@ -54,8 +54,7 @@ public class JSEngine {
 			}
 			
 			bindings.put(functionHeader, functionBody);
-			Function<Double, Double> f = (Function<Double, Double>) javaScriptEngine
-					.eval(script);
+			Function<Double, Double> f = (Function<Double, Double>) javaScriptEngine.eval(script);
 
 			PlotterFunction fct = new PlotterFunction(f, input, null, 0);
 			Double test = f.apply(1.0);
