@@ -75,10 +75,6 @@ public class TreeEditingSupport extends EditingSupport {
 			}
 		}
 		if (element instanceof String) {
-			TreeViewer treeViewer = (TreeViewer) this.getViewer();
-			ModelProvider provider = (ModelProvider) treeViewer.getContentProvider();
-			PlotterFunction parent = (PlotterFunction) provider.getParent(element);
-			parent.setName(val);
 			textEditor.setValue(value);
 		}
 

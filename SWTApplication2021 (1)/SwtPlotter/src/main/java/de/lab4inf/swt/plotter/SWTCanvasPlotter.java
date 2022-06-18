@@ -12,6 +12,7 @@ import de.lab4inf.swt.WidthStrategy.StepSizeStrategy;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -31,10 +32,7 @@ import org.eclipse.swt.widgets.Canvas;
 public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements ResizeCanvas {
 
 	private Color myColor;
-	private StepSizeStrategy strategy = new ConstantStepSizeStrategy(); 
-	
-	
-	
+	private StepSizeStrategy strategy = new ConstantStepSizeStrategy();
 
 	Trafo transformer;
 	private boolean drawPoints = true;
@@ -164,41 +162,47 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 	}
 
 	void drawFunction(PaintEvent e) {
-		transformer = new Trafo(this); 
+		transformer = new Trafo(this);
 		for (PlotterFunction fct : plotterFunctions.values()) {
 			int[] color = fct.getColor();
 			double[] points = strategy.calculatePoints(fct, xMin, xMax, yMin, yMax, breite, hoehe);
-			int[] polygon = convertArray(points);
+			List<List<Integer>> polygon = convertArray(points);
 			e.gc.setLineWidth(1);
 			e.gc.setForeground(new Color(null, color[0], color[1], color[2]));
 			e.gc.setLineStyle(fct.getLineStyle());
-			if (drawPoints)
-				for (int i = 0; i < polygon.length; i = i + 2)
-					e.gc.drawRectangle(polygon[i] - 1, polygon[i + 1] - 1, 2, 2);
-
-			e.gc.drawPolyline(polygon);
+			for(List<Integer> list : polygon) {
+				int[] drawable = list.stream().mapToInt(Integer::intValue).toArray();
+				if (drawPoints)
+					for (int i = 0; i < drawable.length; i = i + 2)
+						e.gc.drawRectangle(drawable[i] - 1, drawable[i + 1] - 1, 2, 2);
+				
+				e.gc.drawPolyline(drawable);
+			}
 
 		}
 	}
 
-	private int[] convertArray(double[] polygon) {
-
+	private List<List<Integer>> convertArray(double[] polygon) {
+		List<List<Integer>> pointslist2 = new ArrayList<>();
 		List<Integer> pointslist = new ArrayList<>();
 
 		int[] point;
 		for (int j = 0; j <= polygon.length - 2; j = j + 2) {
 			double myY = polygon[j + 1];
 
-			if (!(Double.isNaN(myY) || (int) (getYOrigin() - myY) > hoehe || (int) (getYOrigin() - myY) < -hoehe)) {
+			if (!(Double.isNaN(myY) || myY > yMax || myY < yMin)) {
 				point = transformer.convertXY(polygon[j], polygon[j + 1]);
 				Collections.addAll(pointslist, point[0], point[1]);
+			} else {
+				if (pointslist.size() > 0) {
+					pointslist2.add(pointslist);
+					pointslist = new ArrayList<>();
+				}
 			}
 		}
-
-		int[] result = new int[pointslist.size()];
-		for (int i = 0; i < pointslist.size(); i++)
-			result[i] = pointslist.get(i);
-		return result;
+		if(pointslist.size() > 0)
+			pointslist2.add(pointslist);
+		return pointslist2;
 	}
 
 	// Set the X-Draw-Intervall
@@ -274,7 +278,7 @@ public class SWTCanvasPlotter extends org.eclipse.swt.widgets.Canvas implements 
 	public int getYOrigin() {
 		return yOrigin;
 	}
-	
+
 	public StepSizeStrategy getStrategy() {
 		return strategy;
 	}
