@@ -1,9 +1,9 @@
 package de.lab4inf.rcp.plotter;
 
-import org.eclipse.ui.IViewPart;
+
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.views.IViewDescriptor;
+
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;

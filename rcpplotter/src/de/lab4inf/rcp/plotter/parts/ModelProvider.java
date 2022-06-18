@@ -1,7 +1,11 @@
 package de.lab4inf.rcp.plotter.parts;
 
 import java.util.HashMap;
+
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.TreePath;
+import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.Viewer;
 
 import de.lab4inf.swt.plotter.PlotterFunction;
@@ -9,13 +13,14 @@ import de.lab4inf.swt.plotter.PlotterModel;
 
 public class ModelProvider extends PlotterModel implements ITreeContentProvider {
 	private static ModelProvider instance;
-
+	private Viewer viewer;
 	private ModelProvider() {
 		super();
 	}
 
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object NewInput) {
+		this.viewer = viewer;
 		viewer.refresh();
 	}
 
@@ -42,7 +47,11 @@ public class ModelProvider extends PlotterModel implements ITreeContentProvider 
 
 	@Override
 	public Object getParent(Object element) {
-		return (Object) this;
+		TreeSelection selection = (TreeSelection) viewer.getSelection();
+		TreePath[] path = (TreePath[])selection.getPathsFor(element);
+		if( path.length != 0)
+			return path[0].getFirstSegment();
+		else return (Object) this;
 	}
 
 	@Override
@@ -53,5 +62,8 @@ public class ModelProvider extends PlotterModel implements ITreeContentProvider 
 				return true;
 		}
 		return false;
+	}
+	public void refresh() {
+		this.getSupport().firePropertyChange("redraw", null, this.getFunctions());
 	}
 }

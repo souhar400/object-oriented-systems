@@ -3,13 +3,13 @@ package de.lab4inf.rcp.plotter.parts;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.function.Function;
+
 
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 
 import de.lab4inf.swt.WidthStrategy.*;
-import de.lab4inf.swt.plotter.JSEngine;
+
 import de.lab4inf.swt.plotter.NewParser;
 import de.lab4inf.swt.plotter.PlotterFunction;
 import de.lab4inf.swt.plotter.SWTCanvasPlotter;

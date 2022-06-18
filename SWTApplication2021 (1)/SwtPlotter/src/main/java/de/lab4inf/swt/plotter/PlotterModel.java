@@ -12,6 +12,14 @@ public class PlotterModel {
 	private HashMap<String, PlotterFunction> plotterFunctions;
 	private PropertyChangeSupport support;
 
+	public PropertyChangeSupport getSupport() {
+		return support;
+	}
+
+	public void setSupport(PropertyChangeSupport support) {
+		this.support = support;
+	}
+
 	public PlotterModel() {
 		this.support = new PropertyChangeSupport(this);
 		plotterFunctions = new HashMap<String, PlotterFunction>();
