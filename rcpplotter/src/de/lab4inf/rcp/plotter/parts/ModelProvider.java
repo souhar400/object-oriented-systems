@@ -51,7 +51,7 @@ public class ModelProvider extends PlotterModel implements ITreeContentProvider 
 		TreePath[] path = (TreePath[])selection.getPathsFor(element);
 		if( path.length != 0)
 			return path[0].getFirstSegment();
-		else return element;
+		else return null;
 	}
 
 	@Override
