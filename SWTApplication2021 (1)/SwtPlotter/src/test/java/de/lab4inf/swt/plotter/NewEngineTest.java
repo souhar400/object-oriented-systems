@@ -86,8 +86,10 @@ public class NewEngineTest {
 		assertEquals(map.get("s(x)").getName(), "s(x)=sin(x)");
 		assertEquals(map.get("h(x)").getName(), "h(x)=1/x");
 		assertEquals(map.get("f(x)").getName(), "f(x)=a*x*s(h(x))+b");
-		Function<Double, Double> fct = map.get("f(x)").getFunction(); 
-		assertEquals(0.5794, fct.apply(2.0), 0.0001);
-		assertEquals(0.5991, fct.apply(-10.0), 0.0001);
+		Function<Double, Double> f = map.get("f(x)").getFunction(); 
+		Function<Double, Double> s = map.get("s(x)").getFunction(); 
+		assertEquals(0.5794, f.apply(2.0), 0.0001);
+		assertEquals(0.5991, f.apply(-10.0), 0.0001);
+		assertEquals(1, s.apply(Math.PI/2));
 	}
 }
