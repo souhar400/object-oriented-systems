@@ -40,7 +40,8 @@ Das Projekt findet im Rahmen des Moduls **Objektorientierte Systeme** im 4. Seme
     - Divide and Conquer
     - Veränderungsrate und Krümmung
     - Fehlerrate des Polygonzugs 
-  Diese werden gekapselt und durch per geeignete Designpattern angebunden. Passende JUnit Tests werden auch geschrieben. 
+ 
+ Diese werden gekapselt und durch per geeignete Designpattern angebunden. Passende JUnit Tests werden auch geschrieben. 
 - IContentProvider und ILabelProvider als zentrale Elemnte, um Objekte in der Eclipse darzustellen und/oder zu manipulieren werden verwendet
 - Die geplotteten Funktionen werden auf einem Baum aufgelistet. 
 - Aussagekräftige UML Modell(e) entwickeln
